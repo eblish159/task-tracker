@@ -29,6 +29,30 @@ export default function DashboardPage() {
 
   const navigate = useNavigate();
 
+  const formateDate = (date) => {
+      return date.toISOString().slice(0, 10);
+      };
+
+  const setQuickRange = (days) => {
+      const end = new Date();
+      const start = new Date();
+
+      start.setDate(end.getDate() - (days - 1));
+
+      setStartDate(formateDate(start));
+      setEndDate(formateDate(end));
+      };
+
+  const setThisMonth = () => {
+      const now = new Date();
+
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const end = new Date();
+
+      setStartDate(formateDate(start));
+      setEndDate(formateDate(end));
+      };
+
   async function load() {
     setError("");
 
@@ -76,8 +100,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     load();
-    loadCategories();
-  }, []);
+  }, [startDate, endDate, categoryId]);
 
   return (
     <div
@@ -110,6 +133,29 @@ export default function DashboardPage() {
             boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
           }}
         >
+           <div
+               style={{
+                 display: "flex",
+                 gap: 8,
+                 alignItems: "center",
+               }}
+             >
+               <button onClick={() => setQuickRange(7)}>
+                 최근 7일
+               </button>
+
+               <button onClick={() => setQuickRange(14)}>
+                 최근 14일
+               </button>
+
+               <button onClick={() => setQuickRange(30)}>
+                 최근 30일
+               </button>
+
+               <button onClick={setThisMonth}>
+                 이번 달
+               </button>
+             </div>
           <FilterInput label="시작일" type="date" value={startDate} onChange={setStartDate} />
           <FilterInput label="종료일" type="date" value={endDate} onChange={setEndDate} />
 
@@ -402,3 +448,4 @@ const inputStyle = {
   padding: "0 10px",
   background: "#fff",
 };
+
