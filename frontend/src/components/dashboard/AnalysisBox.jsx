@@ -1,4 +1,4 @@
-function export AnalysisBox({ title, icon, lines }) {
+export default function AnalysisBox({ title, icon, lines }) {
                   return (
                     <div
                       style={{
