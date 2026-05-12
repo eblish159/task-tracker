@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import DailyTrendChart from "../components/DailyTrendChart";
+import AnalysisBox from "../components/dashboard/AnalysisBox";
+import SummaryCard from "../components/dashboard/SummaryCard";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,6 +12,7 @@ import {
   fetchOverdueTasks,
 } from "../api/dashboardApi";
 import { fetchCategories } from "../api/categoryApi";
+
 
 export default function DashboardPage() {
   const [startDate, setStartDate] = useState("2026-02-01");

@@ -1,4 +1,4 @@
-export default function SummaryCard ({ title, value, subtitle, icon, onClick }) {
+function export SummaryCard ({ title, value, subtitle, icon, onClick }) {
                                      return (
                                        <div
                                          style={{
