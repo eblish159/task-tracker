@@ -16,6 +16,10 @@ import {
   fetchTodayTasks,
   fetchOverdueTasks,
 } from "../api/dashboardApi";
+import {
+  getPeriodSummaryLines,
+  getDashboardCommentLines,
+} from "../utils/dashboardAnalysis";
 import { fetchCategories } from "../api/categoryApi";
 
 
@@ -213,22 +217,12 @@ export default function DashboardPage() {
               <AnalysisBox
                 title="이번 기간 요약"
                 icon="📌"
-                lines={[
-                  `선택 기간의 전체 작업은 ${data.totalCount}건입니다.`,
-                  `완료된 작업은 ${data.doneCount}건이며 완료율은 ${data.doneRate}%입니다.`,
-                ]}
+                lines={getPeriodSummaryLines(data)}
               />
               <AnalysisBox
                 title="분석 코멘트"
                 icon="💡"
-                lines={[
-                  todayTasks.length > 0
-                    ? `오늘 마감 작업이 ${todayTasks.length}건 있습니다.`
-                    : "오늘 마감 작업은 없습니다.",
-                  overdueTasks.length > 0
-                    ? `지연 작업이 ${overdueTasks.length}건 있습니다. 우선 확인이 필요합니다.`
-                    : "현재 지연 작업은 없습니다.",
-                ]}
+                lines={getDashboardCommentLines(todayTasks, overdueTasks)}
               />
             </div>
 
