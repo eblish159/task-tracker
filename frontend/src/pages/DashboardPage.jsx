@@ -8,6 +8,10 @@ import DonutChartBox from "../components/dashboard/DonutChartBox";
 import DashboardFilter from "../components/dashboard/DashboardFilter";
 import { useNavigate } from "react-router-dom";
 import {
+  getQuickRange,
+  getThisMonthRange,
+} from "../utils/dateUtils";
+import {
   fetchDashboard,
   fetchTodayTasks,
   fetchOverdueTasks,
@@ -33,28 +37,19 @@ export default function DashboardPage() {
 
   const navigate = useNavigate();
 
-  const formateDate = (date) => {
-      return date.toISOString().slice(0, 10);
-      };
-
   const setQuickRange = (days) => {
-      const end = new Date();
-      const start = new Date();
+      const range = getQuickRange(days);
 
-      start.setDate(end.getDate() - (days - 1));
-
-      setStartDate(formateDate(start));
-      setEndDate(formateDate(end));
+      setStartDate(range.startDate);
+      setEndDate(range.endDate);
       };
 
   const setThisMonth = () => {
-      const now = new Date();
+      const range = getThisMonthRange();
 
-      const start = new Date(now.getFullYear(), now.getMonth(), 1);
-      const end = new Date();
 
-      setStartDate(formateDate(start));
-      setEndDate(formateDate(end));
+      setStartDate(range.startDate);
+      setEndDate(range.endDate);
       };
 
   async function load() {
