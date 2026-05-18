@@ -4,6 +4,7 @@ import {
     fetchTodayTasks,
     fetchOverdueTasks,
     } from "../api/dashboardApi";
+import { fetchCategories } from "../api/categoryApi";
 
 export default function useDashboardData(startDate, endDate, categoryId) {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export default function useDashboardData(startDate, endDate, categoryId) {
   const [overdueTasks, setOverdueTasks] = useState([]);
 
   async function load() {
-    setError("");}
+    setError("");
 
     if (!startDate || !endDate) {
           setError("시작일/종료일을 입력하세요.");
