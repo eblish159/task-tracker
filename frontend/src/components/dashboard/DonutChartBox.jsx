@@ -2,7 +2,20 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 
 
 export default function DonutChartBox({ title, items }) {
-  const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6"];
+  const COLORS = [
+    "#2563eb", // blue
+    "#dc2626", // red
+    "#16a34a", // green
+    "#9333ea", // purple
+    "#ea580c", // orange
+    "#0891b2", // cyan
+    "#ca8a04", // yellow-brown
+    "#db2777", // pink
+    "#4f46e5", // indigo
+    "#65a30d", // lime
+    "#7f1d1d", // dark red
+    "#0f766e", // teal
+  ];
 
   const chartData = Array.isArray(items)
     ? items.map((it) => ({
@@ -29,14 +42,14 @@ export default function DonutChartBox({ title, items }) {
           데이터 없음
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={240}>
+        <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie
               data={chartData}
               dataKey="value"
               nameKey="name"
               cx="50%"
-              cy="45%"
+              cy="48%"
               innerRadius={58}
               outerRadius={86}
               paddingAngle={3}
@@ -47,7 +60,10 @@ export default function DonutChartBox({ title, items }) {
             </Pie>
 
             <Tooltip />
-            <Legend />
+            <Legend
+              verticalAlign="bottom"
+              height={50}
+            />
           </PieChart>
         </ResponsiveContainer>
         )}
