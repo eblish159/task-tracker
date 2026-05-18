@@ -3,18 +3,18 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 
 export default function DonutChartBox({ title, items }) {
   const COLORS = [
-    "#2563eb", // blue
-    "#dc2626", // red
-    "#16a34a", // green
-    "#9333ea", // purple
-    "#ea580c", // orange
-    "#0891b2", // cyan
-    "#ca8a04", // yellow-brown
-    "#db2777", // pink
-    "#4f46e5", // indigo
-    "#65a30d", // lime
-    "#7f1d1d", // dark red
-    "#0f766e", // teal
+    "#ff0000", // 빨강
+    "#0000ff", // 파랑
+    "#00cc00", // 초록
+    "#ff9900", // 주황
+    "#9900ff", // 보라
+    "#00cccc", // 청록
+    "#ff1493", // 핑크
+    "#8b4513", // 갈색
+    "#808000", // 올리브
+    "#000000", // 검정
+    "#ffd700", // 노랑
+    "#696969", // 회색
   ];
 
   const chartData = Array.isArray(items)
@@ -62,7 +62,12 @@ export default function DonutChartBox({ title, items }) {
             <Tooltip />
             <Legend
               verticalAlign="bottom"
-              height={50}
+              height={70}
+              iconType="square"
+              wrapperStyle={{
+                fontSize: 14,
+                color: "#111827",
+              }}
             />
           </PieChart>
         </ResponsiveContainer>
