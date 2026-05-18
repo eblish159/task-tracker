@@ -1,21 +1,17 @@
 // frontend/src/pages/DashboardPage.jsx
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import DailyTrendChart from "../components/DailyTrendChart";
 import AnalysisBox from "../components/dashboard/AnalysisBox";
 import SummaryCard from "../components/dashboard/SummaryCard";
 import DonutChartBox from "../components/dashboard/DonutChartBox";
 import DashboardFilter from "../components/dashboard/DashboardFilter";
+import useDashboardData from "../hooks/useDashboardData";
 import { useNavigate } from "react-router-dom";
 import {
   getQuickRange,
   getThisMonthRange,
 } from "../utils/dateUtils";
-import {
-  fetchDashboard,
-  fetchTodayTasks,
-  fetchOverdueTasks,
-} from "../api/dashboardApi";
 import {
   getPeriodSummaryLines,
   getDashboardCommentLines,
@@ -26,20 +22,21 @@ import { fetchCategories } from "../api/categoryApi";
 export default function DashboardPage() {
   const [startDate, setStartDate] = useState("2026-02-01");
   const [endDate, setEndDate] = useState("2026-02-22");
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [data, setData] = useState(null);
   const [categoryId, setCategoryId] = useState("");
 
-  const [categories, setCategories] = useState([]);
-  const [categoryLoading, setCategoryLoading] = useState(false);
-  const [categoryError, setCategoryError] = useState("");
-
-  const [todayTasks, setTodayTasks] = useState([]);
-  const [overdueTasks, setOverdueTasks] = useState([]);
-
   const navigate = useNavigate();
+
+  const {
+    loading,
+    error,
+    data,
+    categories,
+    categoryLoading,
+    categoryError,
+    todayTasks,
+    overdueTasks,
+    load,
+  } = useDashboardData(startDate, endDate, categoryId);
 
   const setQuickRange = (days) => {
       const range = getQuickRange(days);
@@ -56,56 +53,10 @@ export default function DashboardPage() {
       setEndDate(range.endDate);
       };
 
-  async function load() {
-    setError("");
 
-    if (!startDate || !endDate) {
-      setError("시작일/종료일을 입력하세요.");
-      return;
-    }
 
-    try {
-      setLoading(true);
 
-      const [dashboardResult, todayResult, overdueResult] = await Promise.all([
-        fetchDashboard(startDate, endDate, categoryId),
-        fetchTodayTasks(),
-        fetchOverdueTasks(),
-      ]);
 
-      setData(dashboardResult);
-      setTodayTasks(Array.isArray(todayResult) ? todayResult : []);
-      setOverdueTasks(Array.isArray(overdueResult) ? overdueResult : []);
-    } catch (e) {
-      setData(null);
-      setTodayTasks([]);
-      setOverdueTasks([]);
-      setError(e?.message || "조회 실패");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function loadCategories() {
-    setCategoryError("");
-
-    try {
-      setCategoryLoading(true);
-      const list = await fetchCategories();
-      setCategories(Array.isArray(list) ? list : []);
-    } catch (e) {
-      setCategories([]);
-      setCategoryError(e?.message || "카테고리 조회 실패");
-    } finally {
-      setCategoryLoading(false);
-    }
-  }
-    useEffect(() => {
-      loadCategories();
-    }, []);
-
-    useEffect(() => {load();
-    }, [startDate, endDate, categoryId]);
 
   return (
     <div
