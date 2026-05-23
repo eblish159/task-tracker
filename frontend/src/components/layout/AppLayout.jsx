@@ -1,41 +1,22 @@
-import {NavLink, Outlet} from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import "./AppLayout.css";
 
-export default function AppLayout(){
+export default function AppLayout() {
     return (
-        <div className = "app-layout">
-{/*  사이드바  */}
+        <div className="layout">
             <aside className="sidebar">
+                <h1>Tracker</h1>
 
-                <h2 className="sidebar-title">
-                    Tracker
-                </h2>
-
-                <nav className= "sidebar-menu">
-
-                    <NavLink to ="/dashboard">
-                      대시보드
-                    </NavLink>
-
-                    <NavLink to ="/tasks">
-                      작업목록
-                    </NavLink>
-
-                     <NavLink to ="/tasks/new">
-                      작업등록
-                     </NavLink>
+                <nav>
+                    <NavLink to="/dashboard">Dashboard</NavLink>
+                    <NavLink to="/tasks" end>Tasks</NavLink>
+                    <NavLink to="/tasks/new">New Task</NavLink>
                 </nav>
-                      </aside>
+            </aside>
 
-                 {/* 메인 콘텐츠 */}
-                 <main className="main-content">
-                    <Outlet />
-                 </main>
-
-                </div>
-
-
-
-
-            );
-        }
+            <main>
+                <Outlet />
+            </main>
+        </div>
+    );
+}
