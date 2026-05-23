@@ -117,13 +117,7 @@ export default function TaskCreatePage() {
           </select>
         </div>
 
-        <div style={{ display: "grid", gap: 6 }}>
-          <label>userId *</label>
-          <input value={userId} onChange={(e) => setUserId(e.target.value)} />
-          <div style={{ opacity: 0.6, fontSize: 12 }}>
-            ※ 나중에 로그인/세션 붙이면 userId 입력칸은 제거 가능
-          </div>
-        </div>
+
 
         {error && <div style={{ color: "crimson" }}>{error}</div>}
         {successMsg && <div style={{ color: "green" }}>{successMsg}</div>}

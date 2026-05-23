@@ -68,10 +68,10 @@ export default function DashboardPage() {
     >
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <div style={{ marginBottom: 18 }}>
-          <h2 style={{ margin: 0, fontSize: 26 }}>관리통계형 대시보드</h2>
-          <p style={{ margin: "6px 0 0", color: "#667085" }}>
-            작업은 목록에서 관리하고, 대시보드에서는 통계와 흐름을 확인합니다.
-          </p>
+          <h2 style={{ margin: 0, fontSize: 30 }}>Dashboard</h2>
+          {/*<p style={{ margin: "6px 0 0", color: "#667085" }}>*/}
+          {/*  작업은 목록에서 관리하고, 대시보드에서는 통계와 흐름을 확인합니다.*/}
+          {/*</p>*/}
         </div>
 
         {/* 필터 영역 */}
@@ -177,9 +177,7 @@ export default function DashboardPage() {
               />
             </div>
 
-            <div style={{ color: "#667085", fontSize: 14 }}>
-              기간: {startDate} ~ {endDate} / 선택 카테고리: {categoryId || "전체"}
-            </div>
+
           </>
         )}
       </div>

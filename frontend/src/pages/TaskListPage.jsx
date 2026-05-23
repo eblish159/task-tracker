@@ -306,7 +306,7 @@ export default function TaskListPage() {
 
         {tasks.length === 0 && (
           <div style={{ padding: 16, color: "#666" }}>
-            표시할 Task가 없습니다.
+            해당 작업이 없습니다.
           </div>
         )}
 
@@ -410,15 +410,6 @@ export default function TaskListPage() {
               <div style={{ display: "flex", gap: 8, whiteSpace: "nowrap", flexWrap: "wrap" }}>
                 {!isEditing ? (
                   <>
-{/*                     <select */}
-{/*                       value={taskStatus} */}
-{/*                       onChange={(e) => onChangeTaskStatus(task, e.target.value)} */}
-{/*                       style={{ padding: "4px 8px" }} */}
-{/*                     > */}
-{/*                       <option value="TODO">TODO</option> */}
-{/*                       <option value="DOING">DOING</option> */}
-{/*                       <option value="DONE">DONE</option> */}
-{/*                     </select> */}
 
                     <button
                       style={{ padding: "4px 10px", color: "#2563eb" }}
