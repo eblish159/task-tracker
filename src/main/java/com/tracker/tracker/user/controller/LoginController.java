@@ -6,10 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.Authenticator;
 import java.util.Date;
@@ -55,6 +52,26 @@ public class LoginController {
         Map<String, String> response = new HashMap<>();
         response.put("message" , "로그아웃 되었습니다.");
         return  ResponseEntity.ok(response);
+    }
+
+
+    //로그인 세션 여부 확인 로직
+    @GetMapping("/session")
+    public ResponseEntity<Map<String, Object>> getSession(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+
+        String userId = (String) session.getAttribute("userId");
+
+        if(userId==null) {
+            response.put("isLoggedIn",false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
+        }
+
+        response.put("isLoggedIn", true);
+        response.put("userId", userId);
+
+        return ResponseEntity.ok(response);
     }
 
 
