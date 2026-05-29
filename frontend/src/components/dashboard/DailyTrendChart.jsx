@@ -1,4 +1,3 @@
-// frontend/src/components/DailyTrendChart.jsx
 
 import React, { useEffect, useState } from "react";
 import {
@@ -10,7 +9,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import { fetchDailyTrend } from "../api/dashboardApi";
+import { fetchDailyTrend } from "../../api/dashboardApi";
 
 export default function DailyTrendChart({ startDate, endDate, categoryId}) {
   const [data, setData] = useState([]);

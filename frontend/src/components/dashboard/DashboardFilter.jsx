@@ -83,7 +83,7 @@ export default function DashboardFilter({
           padding: "0 18px",
           border: "none",
           borderRadius: 8,
-          background: "#2563eb",
+          background: "#14b8a6",
           color: "#fff",
           fontWeight: 700,
           cursor: loading ? "not-allowed" : "pointer",

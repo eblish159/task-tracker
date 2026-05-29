@@ -1,7 +1,7 @@
 // frontend/src/pages/DashboardPage.jsx
 
 import React, {  useState } from "react";
-import DailyTrendChart from "../components/DailyTrendChart";
+import DailyTrendChart from "../components/dashboard/DailyTrendChart";
 import AnalysisBox from "../components/dashboard/AnalysisBox";
 import SummaryCard from "../components/dashboard/SummaryCard";
 import DonutChartBox from "../components/dashboard/DonutChartBox";
