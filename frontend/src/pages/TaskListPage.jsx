@@ -289,15 +289,16 @@ export default function TaskListPage() {
 
       <div style={{ border: "1px solid #ddd", borderRadius: 8, overflow: "hidden" }}>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "90px 1.5fr 0.8fr 130px 120px 280px",
-            background: "#f7f7f7",
-            padding: 10,
-            fontWeight: 600,
-          }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
+              background: "#f7f7f7",
+              padding: 16,
+              fontWeight: 600,
+              columnGap: 20,
+            }}
         >
-          <div>ID</div>
+
           <div>제목/내용</div>
           <div>우선순위</div>
           <div>마감일</div>
@@ -321,23 +322,38 @@ export default function TaskListPage() {
           const isEditing = editingTaskId === id;
 
           return (
-            <div
-              key={id}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "90px 1.5fr 0.8fr 130px 120px 280px",
-                padding: 10,
-                borderTop: "1px solid #eee",
-                alignItems: "center",
-              }}
-            >
-              <div>{id}</div>
+              <div
+                  key={id}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
+                    padding: 16,
+                    borderTop: "1px solid #eee",
+                    alignItems: "center",
+                    columnGap: 20,
+                  }}
+              >
+
 
               <div>
                 {!isEditing ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     <div style={{ fontWeight: 600 }}>{title}</div>
-                    {content && <div style={{ color: "#666", fontSize: 13 }}>{content}</div>}
+                    {content && (
+                        <div
+                            style={{
+                              color: "#666",
+                              fontSize: 13,
+                              lineHeight: 1.5,
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                        >
+                          {content}
+                        </div>
+                    )}
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
