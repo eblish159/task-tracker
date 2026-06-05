@@ -178,6 +178,20 @@ fetch("/api/tasks", {
 ---
 ## 실행 방법
 
+
+
+### 환경 설정
+
+`src/main/resources/application-example.yaml` 파일을 참고하여  
+`application.yaml` 파일을 생성 후 개인 DB 정보를 입력합니다.
+
+```yaml
+spring:
+  datasource:
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+
+
 ### Backend 실행
 ```bash
 ./gradlew bootRun

@@ -8,8 +8,9 @@ spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
     url: jdbc:oracle:thin:@localhost:1521/XE
-    username: C##TRACKER
-    password: 1234
+    username: YOUR_DB_USERNAME
+    password: YOUR_DB_PASSWORD
+
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.tracker.tracker
