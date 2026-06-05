@@ -41,7 +41,7 @@
 
 - 작업 관리와 통계 영역 분리
 - DUE_DATE 기준 대시보드 분석
-- Today / overdue 작업 분리 관리
+- Today / Overdue 작업 분리 관리
 - Controller / Service / DAO 계층 분리
 - React Custom Hook 기반 구조 분리
 - Dashboard 리팩터링 적용
@@ -190,7 +190,9 @@ spring:
   datasource:
     username: YOUR_DB_USERNAME
     password: YOUR_DB_PASSWORD
+```
 
+---
 
 ### Backend 실행
 ```bash
@@ -244,7 +246,7 @@ npm run dev
 
 ---
 
-### 3. Today / overdue 기능 분리
+### 3. Today / Overdue 기능 분리
 오늘 마감 작업과 지연 작업은 단순 필터가 아니라  
 사용자가 즉시 확인해야 하는 정보라고 판단하여  
 별도의 기능으로 분리했습니다.
