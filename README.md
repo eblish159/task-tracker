@@ -1,4 +1,4 @@
-# Task Tracker
+**# Task Tracker
 
 ## 프로젝트 소개
 작업(Task)을 관리하면서 진행 상태를 한눈에 파악할 수 있도록 만든 트래커 프로젝트입니다.
@@ -11,11 +11,38 @@
 
 ---
 
+## 프로젝트 정보
+
+- 개인 프로젝트
+- 개발 기간 : 2026.01 ~ 2026.06
+- Backend / Frontend 설계 및 구현
+- 개발 목적 : 작업 관리 데이터를 기반으로 한 관리형 Dashboard 시스템 구현
+
+---
+
+
+## 실행 화면
+
+
+### 대시보드
+![Dashboard](./images/dashboard.png)
+
+### 작업 목록
+![Task List](./images/taskList.png)
+
+### 작업 등록
+![Task Create](./images/task-create.png)
+
+### 로그인
+![Login](./images/login.png)
+---
+
 ## 주요 특징
 
 - 작업 관리와 통계 영역 분리
 - DUE_DATE 기준 대시보드 분석
-- today / overdue 작업 분리 관리
+- Today / overdue 작업 분리 관리
+- Controller / Service / DAO 계층 분리
 - React Custom Hook 기반 구조 분리
 - Dashboard 리팩터링 적용
 
@@ -28,13 +55,127 @@
 - Spring Boot
 - MyBatis
 - Oracle DB
+- HttpSession 기반 인증
 
 ### Frontend
 - React
 - Vite
+- React Router
+- Recharts
 
 ---
 
+## ERD
+
+![ERD](./images/erd.png)
+
+### 테이블 설계
+
+- USERS
+  - 사용자 계정 정보 관리
+  - 로그인 및 사용자별 데이터 분리를 위한 기준 테이블
+
+- TASK_CATEGORY
+  - 사용자가 생성한 작업 카테고리 관리
+  - 사용자별 카테고리 분리
+
+- TASK
+  - 실제 작업 정보 저장
+  - 작업 상태(TODO / DOING / DONE)
+  - 우선순위 및 마감일 관리
+
+---
+
+## API 명세
+
+
+### Category API
+
+| Method | URL | 설명 |
+|---|---|---|
+|GET|`/api/categories`|카테고리 목록 조회|
+
+
+---
+
+### Task API
+
+| Method | URL | 설명 |
+|---|---|---|
+|GET|`/api/tasks`|작업 목록 조회|
+|POST|`/api/tasks`|작업 등록|
+|PUT|`/api/tasks/{taskId}`|작업 수정|
+|DELETE|`/api/tasks/{taskId}`|작업 삭제|
+|PATCH|`/api/tasks/{taskId}/status`|작업 상태 변경|
+|GET|`/api/tasks/today`|오늘 마감 작업 목록 조회|
+|GET|`/api/tasks/overdue`|마감일 지난 미완료 작업 조회|
+
+
+---
+
+### Dashboard API
+
+| Method | URL | 설명 |
+|---|---|---|
+|GET|`/api/dashboard`|대시보드 통계 조회|
+|GET|`/api/dashboard/trend`|기간별 완료 추이 조회|
+
+
+### Dashboard Parameter
+
+|Parameter|설명|
+|-|-|
+|startDate|조회 시작일|
+|endDate|조회 종료일|
+|categoryId|카테고리 필터|
+|groupBy|일/주/월 그룹 기준|
+
+---
+
+## 인증 구조
+
+JWT 방식이 아닌 서버 세션 기반 인증 방식을 적용했습니다.
+
+로그인 성공 시 서버의 HttpSession에 사용자 정보를 저장하고,
+이후 요청에서는 저장된 세션 정보를 기준으로 사용자 데이터를 조회합니다.
+
+
+### 인증 흐름
+
+```text
+React Login 요청
+
+↓
+
+Spring Controller
+
+↓
+
+Service 사용자 검증
+
+↓
+
+HttpSession 저장
+
+↓
+
+USER_ID 기준 데이터 조회
+```
+
+
+프론트엔드는 세션 쿠키 전달을 위해 다음 옵션을 사용했습니다.
+
+```javascript
+fetch("/api/tasks", {
+    credentials:"include"
+})
+```
+
+이를 통해 로그인 사용자별 독립적인 작업 데이터와
+대시보드 통계를 제공합니다.
+
+
+---
 ## 실행 방법
 
 ### Backend 실행
@@ -89,7 +230,7 @@ npm run dev
 
 ---
 
-### 3. today / overdue 기능 분리
+### 3. Today / overdue 기능 분리
 오늘 마감 작업과 지연 작업은 단순 필터가 아니라  
 사용자가 즉시 확인해야 하는 정보라고 판단하여  
 별도의 기능으로 분리했습니다.
@@ -126,6 +267,7 @@ frontend
   유지보수와 확장성을 고려한 구조로 설계했습니다.
 
 ---
+
 
 ## 대시보드 리팩터링
 
@@ -204,15 +346,8 @@ TASK와 CATEGORY 테이블 양쪽에 동일한 컬럼명이 존재했고,
 ## 개선 예정
 
 - 작업 분석 코멘트 기능 고도화
-  - 예: 완료율 변화 / 지연 비율 자동 분석
+  - 완료율 변화 / 지연 비율 자동 분석
 
-- 기간 범위별 통계 자동 그룹화 개선
-  - 일간 / 주간 / 월간 자동 전환
-
-- 필터 기능 확장 및 UI 개선
+- Dashboard 기간/카테고리 필터 UX 개선
 
 - 대시보드 데이터 캐싱 및 성능 개선
- 
-## 프로젝트 목표
-- 단순 CRUD 기능을 넘어서  
-  작업 데이터를 기반으로 상태를 분석하고 관리할 수 있는 구조를 구현하는 것을 목표로 했습니다.
