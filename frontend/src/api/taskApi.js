@@ -1,5 +1,3 @@
-// frontend/src/api/taskApi.js
-
 export async function createTask(payload) {
   const res = await fetch("/api/tasks", {
     method: "POST",

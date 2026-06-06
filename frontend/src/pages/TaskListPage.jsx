@@ -22,7 +22,6 @@ const INITIAL_EDIT_FORM = {
   taskContent: "",
   priority: "NORMAL",
   dueDate: "",
-  userId: "",
   categoryId: "",
   taskStatus: "TODO",
 };
@@ -76,7 +75,7 @@ export default function TaskListPage() {
   const [editForm, setEditForm] = useState(INITIAL_EDIT_FORM);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [size] = useState(10); //
+  const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [categoryId, setCategoryId] = useState("");
@@ -99,7 +98,7 @@ export default function TaskListPage() {
       }
 
       if (categoryId) {
-          params.categoryId = categoryId;
+        params.categoryId = categoryId;
       }
 
       if (due) {
@@ -138,7 +137,6 @@ export default function TaskListPage() {
       taskContent: task.taskContent || "",
       priority: task.priority || "NORMAL",
       dueDate: formatDate(task.dueDate),
-      userId: task.userId || "",
       categoryId: task.categoryId != null ? String(task.categoryId) : "",
       taskStatus: (task.taskStatus || "TODO").toUpperCase(),
     });
@@ -151,6 +149,7 @@ export default function TaskListPage() {
 
   function onChangeEditForm(e) {
     const { name, value } = e.target;
+
     setEditForm((prev) => ({
       ...prev,
       [name]: value,
@@ -165,13 +164,8 @@ export default function TaskListPage() {
       return;
     }
 
-    if (!editForm.userId.trim()) {
-      alert("userId는 필수입니다.");
-      return;
-    }
-
     if (!editForm.categoryId) {
-      alert("categoryId는 필수입니다.");
+      alert("카테고리를 선택해주세요.");
       return;
     }
 
@@ -180,7 +174,6 @@ export default function TaskListPage() {
       taskContent: editForm.taskContent.trim(),
       priority: editForm.priority || "NORMAL",
       dueDate: editForm.dueDate ? toApiDate(editForm.dueDate) : null,
-      userId: editForm.userId.trim(),
       categoryId: Number(editForm.categoryId),
       taskStatus: editForm.taskStatus || "TODO",
     };
@@ -247,7 +240,6 @@ export default function TaskListPage() {
           {loading ? "로딩..." : "새로고침"}
         </button>
 
-        {/* 카테고리 필터 */}
         <label>
           카테고리:&nbsp;
           <select
@@ -268,7 +260,6 @@ export default function TaskListPage() {
           </select>
         </label>
 
-        {/* 작업 상태 필터 */}
         <label>
           작업 상태 필터:&nbsp;
           <select
@@ -287,22 +278,28 @@ export default function TaskListPage() {
         </span>
       </div>
 
+      {error && (
+        <div style={{ marginBottom: 12, color: "crimson" }}>
+          {error}
+        </div>
+      )}
+
       <div style={{ border: "1px solid #ddd", borderRadius: 8, overflow: "hidden" }}>
         <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
-              background: "#f7f7f7",
-              padding: 16,
-              fontWeight: 600,
-              columnGap: 20,
-            }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
+            background: "#f7f7f7",
+            padding: 16,
+            fontWeight: 600,
+            columnGap: 20,
+          }}
         >
-
           <div>제목/내용</div>
           <div>우선순위</div>
           <div>마감일</div>
           <div>상태</div>
+          <div>관리</div>
         </div>
 
         {tasks.length === 0 && (
@@ -322,37 +319,35 @@ export default function TaskListPage() {
           const isEditing = editingTaskId === id;
 
           return (
-              <div
-                  key={id}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
-                    padding: 16,
-                    borderTop: "1px solid #eee",
-                    alignItems: "center",
-                    columnGap: 20,
-                  }}
-              >
-
-
+            <div
+              key={id}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
+                padding: 16,
+                borderTop: "1px solid #eee",
+                alignItems: "center",
+                columnGap: 20,
+              }}
+            >
               <div>
                 {!isEditing ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     <div style={{ fontWeight: 600 }}>{title}</div>
                     {content && (
-                        <div
-                            style={{
-                              color: "#666",
-                              fontSize: 13,
-                              lineHeight: 1.5,
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                            }}
-                        >
-                          {content}
-                        </div>
+                      <div
+                        style={{
+                          color: "#666",
+                          fontSize: 13,
+                          lineHeight: 1.5,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {content}
+                      </div>
                     )}
                   </div>
                 ) : (
@@ -386,7 +381,11 @@ export default function TaskListPage() {
                 {!isEditing ? (
                   priority
                 ) : (
-                  <select name="priority" value={editForm.priority} onChange={onChangeEditForm}>
+                  <select
+                    name="priority"
+                    value={editForm.priority}
+                    onChange={onChangeEditForm}
+                  >
                     <option value="LOW">LOW</option>
                     <option value="NORMAL">NORMAL</option>
                     <option value="HIGH">HIGH</option>
@@ -426,7 +425,6 @@ export default function TaskListPage() {
               <div style={{ display: "flex", gap: 8, whiteSpace: "nowrap", flexWrap: "wrap" }}>
                 {!isEditing ? (
                   <>
-
                     <button
                       style={{ padding: "4px 10px", color: "#2563eb" }}
                       onClick={() => startEdit(task)}
@@ -443,7 +441,10 @@ export default function TaskListPage() {
                   </>
                 ) : (
                   <>
-                    <button style={{ padding: "4px 10px", color: "#2563eb" }} onClick={saveEdit}>
+                    <button
+                      style={{ padding: "4px 10px", color: "#2563eb" }}
+                      onClick={saveEdit}
+                    >
                       수정완료
                     </button>
 

@@ -19,7 +19,6 @@ public class TaskCategoryController {
 
     @GetMapping("/api/categories")
     public List<TaskCategoryVO> categories() {
-        System.out.println("TaskCategoryController /api/categories 호출됨");
         return taskCategoryService.getAllCategories();
     }
 

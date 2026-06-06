@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-
+import {BrowserRouter,Routes,Route,Navigate,} from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage";
 import TaskCreatePage from "./pages/TaskCreatePage";
 import TaskListPage from "./pages/TaskListPage";
 import LoginPage from "./pages/LoginPage";
-
 import AppLayout from "./components/layout/AppLayout";
 
 function App() {
@@ -63,7 +56,7 @@ function App() {
               }
             />
 
-            {/* 무조건 로그인 페이지 */}
+            {/* 첫화면 로그인 페이지 */}
             <Route
               path="*"
               element={<Navigate to="/login" replace />}
@@ -77,7 +70,6 @@ function App() {
               element={<Navigate to="/dashboard" replace />}
             />
 
-            {/* 로그인 상태에서만 Layout */}
             {/* 로그인 상태에서만 Layout */}
             <Route
               element={

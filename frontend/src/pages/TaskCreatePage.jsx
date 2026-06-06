@@ -11,7 +11,6 @@ export default function TaskCreatePage() {
   const [priority, setPriority] = useState("NORMAL");
   const [dueDate, setDueDate] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [userId] = useState("testuser");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +54,6 @@ export default function TaskCreatePage() {
       taskContent: taskContent.trim() ? taskContent.trim() : null,
       priority,
       dueDate: dueDate ? dueDate : null,
-      userId: userId.trim(),
       categoryId: Number(categoryId),
     };
 

@@ -23,7 +23,6 @@ public class LoginController {
     //로그인 요청처리
     @PostMapping
     public ResponseEntity<Map<String, String>> login(@RequestBody UserVO loginRequest, HttpSession session) {
-        System.out.println("로그인 컨트롤러 진입");
         Map<String, String> response = new HashMap<>();
 
         if (loginRequest.getUserId() == null || loginRequest.getUserId().trim().isEmpty()

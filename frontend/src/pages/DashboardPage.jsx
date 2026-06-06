@@ -1,5 +1,3 @@
-// frontend/src/pages/DashboardPage.jsx
-
 import React, {  useState } from "react";
 import DailyTrendChart from "../components/dashboard/DailyTrendChart";
 import AnalysisBox from "../components/dashboard/AnalysisBox";
@@ -52,11 +50,6 @@ export default function DashboardPage() {
       setStartDate(range.startDate);
       setEndDate(range.endDate);
       };
-
-
-
-
-
 
   return (
     <div

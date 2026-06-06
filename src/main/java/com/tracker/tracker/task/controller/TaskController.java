@@ -16,78 +16,56 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    // 개발용 고정 유저
-    private static final String DEV_USER_ID = "testuser";
-
-    public TaskController(TaskService taskService){
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
+    private String getLoginUserId(HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+
+        if (userId == null) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
+        return userId;
+    }
+
     @PostMapping
-    public TaskVO createTask(@RequestBody TaskVO taskVO) {
+    public ResponseEntity<?> createTask(
+            @RequestBody TaskVO taskVO,
+            HttpSession session
+    ) {
+        String userId = getLoginUserId(session);
 
-        // =========================
-        // 개발용 코드 (활성화)
-        // =========================
-        taskVO.setUserId(DEV_USER_ID);
-        return taskService.createTask(taskVO);
+        taskVO.setUserId(userId);
+        TaskVO createdTask = taskService.createTask(taskVO);
 
-        // =========================
-        // 기존 세션 방식 코드 (비활성화 보관)
-        // =========================
-        // String userId = (String) session.getAttribute("userId");
-        //
-        // if (userId == null) {
-        //     throw new RuntimeException("로그인이 필요합니다.");
-        // }
-        //
-        // taskVO.setUserId(userId);
-        // return taskService.createTask(taskVO);
+        return ResponseEntity.ok(createdTask);
     }
 
     @GetMapping("/today")
-    public ResponseEntity<?> getTodayTasks() {
+    public ResponseEntity<?> getTodayTasks(HttpSession session) {
+        String userId = getLoginUserId(session);
 
-        // =========================
-        // 개발용 코드 (활성화)
-        // =========================
-        return ResponseEntity.ok(taskService.getTodayTasks(DEV_USER_ID));
-
-        // =========================
-        // 기존 세션 방식 코드 (비활성화 보관)
-        // =========================
-        // String userId = (String) session.getAttribute("userId");
-        //
-        // if (userId == null) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        // }
-        //
-        // return ResponseEntity.ok(taskService.getTodayTasks(userId));
+        return ResponseEntity.ok(taskService.getTodayTasks(userId));
     }
 
     @GetMapping("/overdue")
-    public ResponseEntity<?> getOverdueTasks() {
+    public ResponseEntity<?> getOverdueTasks(HttpSession session) {
+        String userId = getLoginUserId(session);
 
-        // =========================
-        // 개발용 코드 (활성화)
-        // =========================
-        return ResponseEntity.ok(taskService.getOverdueTasks(DEV_USER_ID));
-
-        // =========================
-        // 기존 세션 방식 코드 (비활성화 보관)
-        // =========================
-        // String userId = (String) session.getAttribute("userId");
-        //
-        // if (userId == null) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        // }
-        //
-        // return ResponseEntity.ok(taskService.getOverdueTasks(userId));
+        return ResponseEntity.ok(taskService.getOverdueTasks(userId));
     }
 
     @GetMapping("/{taskId}")
-    public TaskVO getTask(@PathVariable Long taskId) {
-        return taskService.selectTaskById(taskId);
+    public ResponseEntity<?> getTask(@PathVariable Long taskId) {
+        TaskVO task = taskService.selectTaskById(taskId);
+
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("작업을 찾을 수 없습니다.");
+        }
+
+        return ResponseEntity.ok(task);
     }
 
     @GetMapping
@@ -96,64 +74,61 @@ public class TaskController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String taskStatus,
-            @RequestParam(required = false) String due
+            @RequestParam(required = false) String due,
+            HttpSession session
     ) {
+        String userId = getLoginUserId(session);
 
-        // =========================
-        // 개발용 코드 (활성화)
-        // =========================
-        TaskListResponseVO response = taskService.getTaskPage(DEV_USER_ID, page, size, categoryId, taskStatus, due);
+        TaskListResponseVO response =
+                taskService.getTaskPage(userId, page, size, categoryId, taskStatus, due);
+
         return ResponseEntity.ok(response);
-
-        // =========================
-        // 기존 세션 방식 코드 (비활성화 보관)
-        // =========================
-        // String userId = (String) session.getAttribute("userId");
-        //
-        // if (userId == null) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        // }
-        //
-        // TaskListResponseVO response = taskService.getTaskPage(userId, page, size, categoryId);
-        // return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{taskId}")
-    public TaskVO updateTask(@PathVariable Long taskId, @RequestBody TaskVO taskVO){
+    public ResponseEntity<?> updateTask(
+            @PathVariable Long taskId,
+            @RequestBody TaskVO taskVO,
+            HttpSession session
+    ) {
+        String userId = getLoginUserId(session);
 
-        // =========================
-        // 개발용 코드 (활성화)
-        // =========================
         taskVO.setTaskId(taskId);
-        taskVO.setUserId(DEV_USER_ID);
-        return taskService.updateTask(taskVO);
+        taskVO.setUserId(userId);
 
-        // =========================
-        // 기존 세션 방식 코드 (비활성화 보관)
-        // =========================
-        // String userId = (String) session.getAttribute("userId");
-        //
-        // if (userId == null) {
-        //     throw new RuntimeException("로그인이 필요합니다.");
-        // }
-        //
-        // taskVO.setTaskId(taskId);
-        // taskVO.setUserId(userId);
-        // return taskService.updateTask(taskVO);
+        TaskVO updatedTask = taskService.updateTask(taskVO);
+
+        return ResponseEntity.ok(updatedTask);
     }
 
     @PatchMapping("/{taskId}/status")
-    public ResponseEntity<TaskVO> updateTaskStatus(
+    public ResponseEntity<?> updateTaskStatus(
             @PathVariable Long taskId,
-            @RequestBody Map<String, String> request
+            @RequestBody Map<String, String> request,
+            HttpSession session
     ) {
+        getLoginUserId(session);
+
         String taskStatus = request.get("taskStatus");
+
+        if (taskStatus == null || taskStatus.isBlank()) {
+            return ResponseEntity.badRequest().body("작업 상태 값이 필요합니다.");
+        }
+
         TaskVO updatedTask = taskService.updateTaskStatus(taskId, taskStatus);
+
         return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/{taskId}")
-    public void deleteTask(@PathVariable Long taskId){
+    public ResponseEntity<?> deleteTask(
+            @PathVariable Long taskId,
+            HttpSession session
+    ) {
+        getLoginUserId(session);
+
         taskService.deleteTask(taskId);
+
+        return ResponseEntity.ok("작업이 삭제되었습니다.");
     }
 }

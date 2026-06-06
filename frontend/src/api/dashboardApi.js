@@ -1,5 +1,3 @@
-// frontend/src/api/dashboardApi.js
-
 export async function fetchDashboard(startDate, endDate, categoryId) {
   const qs = new URLSearchParams({ startDate, endDate });
 

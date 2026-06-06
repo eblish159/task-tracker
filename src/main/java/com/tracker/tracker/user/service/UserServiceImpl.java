@@ -27,12 +27,10 @@ public class UserServiceImpl implements UserService {
         UserVO user = userDAO.findByUserId(userId);
 
         if (user == null) {
-            System.out.println("로그인 정보가 없습니다.");
             return false;
         }
 
         boolean isValidPassword = passwordEncoder.matches(password, user.getUserPassword());
-        System.out.println("비밀번호 검증 결과: " + isValidPassword);
 
         return isValidPassword;
     }
