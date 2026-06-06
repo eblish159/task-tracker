@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchCategories } from "../api/categoryApi";
 import { createTask } from "../api/taskApi";
 import "./TaskCreatePage.css";
 
 export default function TaskCreatePage() {
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
 
   const [taskTitle, setTaskTitle] = useState("");
@@ -14,7 +17,6 @@ export default function TaskCreatePage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
     async function loadCategories() {
@@ -32,7 +34,6 @@ export default function TaskCreatePage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    setSuccessMsg("");
 
     if (!taskTitle.trim()) {
       setError("제목은 필수입니다.");
@@ -41,11 +42,6 @@ export default function TaskCreatePage() {
 
     if (!categoryId) {
       setError("카테고리를 선택하세요.");
-      return;
-    }
-
-    if (!userId.trim()) {
-      setError("userId는 필수입니다.");
       return;
     }
 
@@ -60,14 +56,10 @@ export default function TaskCreatePage() {
     try {
       setLoading(true);
 
-      const saved = await createTask(payload);
-      setSuccessMsg(`등록 완료! taskId = ${saved.taskId}`);
+      await createTask(payload);
 
-      setTaskTitle("");
-      setTaskContent("");
-      setPriority("NORMAL");
-      setDueDate("");
-      setCategoryId("");
+      alert("작업이 등록되었습니다.");
+      navigate("/tasks");
     } catch (e) {
       setError(e?.message || "등록 실패");
     } finally {
@@ -146,9 +138,8 @@ export default function TaskCreatePage() {
           </div>
 
           {error && <div className="task-message error">{error}</div>}
-          {successMsg && <div className="task-message success">{successMsg}</div>}
 
-          <button className="task-submit-btn" disabled={loading}>
+          <button type="submit" className="task-submit-btn" disabled={loading}>
             {loading ? "등록중..." : "등록하기"}
           </button>
         </form>
