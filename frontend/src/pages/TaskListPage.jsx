@@ -408,7 +408,14 @@ export default function TaskListPage() {
 
               <div>
                 {!isEditing ? (
-                  <span style={getTaskStatusStyle(taskStatus)}>{taskStatus}</span>
+                  <select
+                    value={taskStatus}
+                    onChange={(e) => onChangeTaskStatus(task, e.target.value)}
+                  >
+                    <option value="TODO">TODO</option>
+                    <option value="DOING">DOING</option>
+                    <option value="DONE">DONE</option>
+                  </select>
                 ) : (
                   <select
                     name="taskStatus"

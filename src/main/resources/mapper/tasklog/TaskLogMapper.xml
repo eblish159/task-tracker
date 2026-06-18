@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tracker.tracker.tasklog.dao.TaskLogDAO">
+
+    <insert id="insertTaskLog" parameterType="com.tracker.tracker.tasklog.vo.TaskLogVO">
+        INSERT INTO TASK_LOG (
+        LOG_ID,
+        TASK_ID,
+        USER_ID,
+        ACTION_TYPE,
+        BEFORE_STATUS,
+        AFTER_STATUS,
+        CREATED_DATE
+        ) VALUES (
+        SEQ_TASK_LOG.NEXTVAL,
+        #{taskId},
+        #{userId},
+        #{actionType},
+        #{beforeStatus, jdbcType=VARCHAR},
+        #{afterStatus, jdbcType=VARCHAR},
+        SYSDATE
+        )
+    </insert>
+
+</mapper>

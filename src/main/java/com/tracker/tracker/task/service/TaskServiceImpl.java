@@ -3,6 +3,9 @@ package com.tracker.tracker.task.service;
 import com.tracker.tracker.task.dao.TaskDAO;
 import com.tracker.tracker.task.vo.TaskListResponseVO;
 import com.tracker.tracker.task.vo.TaskVO;
+import com.tracker.tracker.tasklog.service.TaskLogService;
+import com.tracker.tracker.tasklog.vo.TaskLogVO;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -18,9 +21,11 @@ public class TaskServiceImpl implements TaskService {
     private static final Set<String> ALLOWED_TASK_STATUS = Set.of("TODO", "DOING", "DONE");
 
     private final TaskDAO taskDAO;
+    private final TaskLogService taskLogService;
 
-    public TaskServiceImpl(TaskDAO taskDAO){
+    public TaskServiceImpl(TaskDAO taskDAO, TaskLogService taskLogService){
         this.taskDAO = taskDAO;
+        this.taskLogService = taskLogService;
     }
 
     @Override
@@ -32,7 +37,16 @@ public class TaskServiceImpl implements TaskService {
         if(inserted != 1){
             throw new IllegalStateException("Task 생성 실패");
         }
+        if (taskVO.getTaskId()!= null) {
+            TaskLogVO log = new TaskLogVO();
+            log.setTaskId(taskVO.getTaskId());
+            log.setUserId(taskVO.getUserId());
+            log.setActionType("CREATE");
+            log.setBeforeStatus(null);
+            log.setAfterStatus(taskVO.getTaskStatus());
 
+            taskLogService.saveLog(log);
+        }
         if(taskVO.getTaskId() == null) {
             return taskVO;
         }
@@ -140,6 +154,15 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalStateException("작업 상태 변경에 실패했습니다. taskId = " + taskId);
         }
 
+        TaskLogVO log = new TaskLogVO();
+        log.setTaskId(taskId);
+        log.setUserId(existing.getUserId());
+        log.setActionType("STATUS_CHANGE");
+        log.setBeforeStatus(existing.getTaskStatus());
+        log.setAfterStatus(taskStatus);
+
+        taskLogService.saveLog(log);
+
         return selectTaskById(taskId);
     }
 
@@ -163,6 +186,15 @@ public class TaskServiceImpl implements TaskService {
         if(deleted != 1){
             throw new IllegalArgumentException("Task 삭제에 실패했습니다. taskId = " + taskId);
         }
+
+        TaskLogVO log = new TaskLogVO();
+        log.setTaskId(taskId);
+        log.setUserId(existing.getUserId());
+        log.setActionType("DELETE");
+        log.setBeforeStatus(existing.getTaskStatus());
+        log.setAfterStatus(null);
+
+        taskLogService.saveLog(log);
     }
 
     @Override
