@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import TaskHistory from "../components/TaskHistory";
 import {
   deleteTask,
   fetchTasks,
@@ -81,6 +82,8 @@ export default function TaskListPage() {
   const [categoryId, setCategoryId] = useState("");
   const [searchParams] = useSearchParams();
   const due = searchParams.get("due");
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyTask, setHistoryTask] = useState(null);
 
   async function load(page = currentPage) {
     setError("");
@@ -432,19 +435,29 @@ export default function TaskListPage() {
               <div style={{ display: "flex", gap: 8, whiteSpace: "nowrap", flexWrap: "wrap" }}>
                 {!isEditing ? (
                   <>
-                    <button
-                      style={{ padding: "4px 10px", color: "#2563eb" }}
-                      onClick={() => startEdit(task)}
-                    >
-                      수정
-                    </button>
+                      <button
+                          style={{ padding: "4px 10px", color: "#2563eb" }}
+                          onClick={() => startEdit(task)}
+                      >
+                          수정
+                      </button>
 
-                    <button
-                      style={{ padding: "4px 10px", color: "#dc2626" }}
-                      onClick={() => onDelete(task)}
-                    >
-                      삭제
-                    </button>
+                      <button
+                          style={{ padding: "4px 10px", color: "#dc2626" }}
+                          onClick={() => onDelete(task)}
+                      >
+                          삭제
+                      </button>
+
+                      <button
+                          style={{ padding: "4px 10px", color: "#059669" }}
+                          onClick={() => {
+                              setHistoryTask(task);
+                              setHistoryOpen(true);
+                          }}
+                      >
+                          이력
+                      </button>
                   </>
                 ) : (
                   <>
@@ -464,6 +477,7 @@ export default function TaskListPage() {
             </div>
           );
         })}
+
       </div>
 
       <div
@@ -503,6 +517,15 @@ export default function TaskListPage() {
           다음
         </button>
       </div>
+      {historyOpen && (
+              <TaskHistory
+                  task={historyTask}
+                  onClose={() => {
+                      setHistoryOpen(false);
+                      setHistoryTask(null);
+                  }}
+              />
+          )}
     </div>
   );
 }

@@ -88,3 +88,15 @@ export async function updateTaskStatus(taskId, taskStatus) {
 
   return true;
 }
+
+export async function fetchTaskLogs(taskId) {
+  const response = await fetch(`/api/tasks/${taskId}/logs`, {
+    method: "GET",
+    credentials: "include",
+  });
+    if (!response.ok) {
+        throw new Error("작업 이력 조회 실패");
+    }
+
+    return await response.json();
+}

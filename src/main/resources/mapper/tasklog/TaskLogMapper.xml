@@ -25,4 +25,21 @@
         )
     </insert>
 
+    <select id="selectTaskLogsByTaskId"
+            parameterType="long"
+            resultType="com.tracker.tracker.tasklog.vo.TaskLogVO">
+        SELECT
+        LOG_ID        AS logId,
+        TASK_ID       AS taskId,
+        USER_ID       AS userId,
+        ACTION_TYPE   AS actionType,
+        BEFORE_STATUS AS beforeStatus,
+        AFTER_STATUS  AS afterStatus,
+        CREATED_DATE  AS createdDate
+        FROM TASK_LOG
+        WHERE TASK_ID = #{taskId}
+        ORDER BY CREATED_DATE DESC
+    </select>
+
+
 </mapper>
