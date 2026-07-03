@@ -1,6 +1,6 @@
-package com.tracker.tracker.dashboard.dao;
-import com.tracker.tracker.dashboard.vo.CompletionTrendVO;
+package com.tracker.tracker.report.dao;
 
+import com.tracker.tracker.dashboard.vo.CompletionTrendVO;
 import com.tracker.tracker.dashboard.vo.GroupCountVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface DashboardDAO {
+public interface ReportDAO {
     int countTotalTasks(@Param("userId") String userId,
                         @Param("startDate") String startDate,
                         @Param("endDate") String endDate,
@@ -21,7 +21,7 @@ public interface DashboardDAO {
 
 
 
-    List<GroupCountVO> countByPriority(@Param("userId") String userId ,
+    List<GroupCountVO> countByPriority(@Param("userId") String userId,
                                        @Param("startDate") String startDate,
                                        @Param("endDate") String endDate,
                                        @Param("categoryId") Long categoryId);
