@@ -22,6 +22,25 @@
         </if>
     </select>
 
+    <!-- 6) 지연 작업 수 (미완료 + 마감일 경과) -->
+    <select id="countOverdueTasks" resultType="int">
+        <![CDATA[
+        SELECT COUNT(*)
+        FROM TASK
+        WHERE STATUS <> 'DELETED'
+          AND TASK_STATUS <> 'DONE'
+          AND USER_ID = #{userId}
+          AND DUE_DATE < TRUNC(SYSDATE)
+          AND DUE_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+          AND DUE_DATE < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+    ]]>
+        <if test="categoryId != null">
+            <![CDATA[
+            AND CATEGORY_ID = #{categoryId}
+        ]]>
+        </if>
+    </select>
+
     <!-- 2) 완료 Task 수 -->
     <select id="countDoneTasks" resultType="int">
         <![CDATA[
@@ -39,6 +58,8 @@
             ]]>
         </if>
     </select>
+
+
 
     <!-- 3) 우선순위별 집계 -->
     <select id="countByPriority"
@@ -84,7 +105,180 @@
         ]]>
     </select>
 
-    <!-- 5) 기간별 작업 추이 집계 -->
+    <select id="selectCategoryPerformance"
+            resultType="com.tracker.tracker.report.vo.CategoryPerformanceVO">
+
+        <![CDATA[
+        SELECT
+            TC.TITLE AS categoryName,
+            COUNT(*) AS totalCount,
+            SUM(
+                CASE
+                    WHEN T.TASK_STATUS = 'DONE' THEN 1
+                    ELSE 0
+                END
+            ) AS doneCount
+        FROM TASK T
+        JOIN TASK_CATEGORY TC
+          ON T.CATEGORY_ID = TC.CATEGORY_ID
+        WHERE T.STATUS <> 'DELETED'
+          AND T.USER_ID = #{userId}
+          AND T.DUE_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+          AND T.DUE_DATE < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+          AND TC.STATUS <> 'DELETED'
+    ]]>
+
+        <if test="categoryId != null">
+            <![CDATA[
+            AND T.CATEGORY_ID = #{categoryId}
+        ]]>
+        </if>
+
+        <![CDATA[
+        GROUP BY TC.TITLE
+        ORDER BY COUNT(*) DESC
+    ]]>
+
+    </select>
+
+    <select id="selectPriorityPerformance"
+            resultType="com.tracker.tracker.report.vo.PriorityPerformanceVO">
+
+        <![CDATA[
+        SELECT
+            T.PRIORITY AS priority,
+            COUNT(*) AS totalCount,
+            SUM(
+                CASE
+                    WHEN T.TASK_STATUS = 'DONE' THEN 1
+                    ELSE 0
+                END
+            ) AS doneCount
+        FROM TASK T
+        WHERE T.STATUS <> 'DELETED'
+          AND T.USER_ID = #{userId}
+          AND T.DUE_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+          AND T.DUE_DATE < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+    ]]>
+
+        <if test="categoryId != null">
+            <![CDATA[
+            AND T.CATEGORY_ID = #{categoryId}
+        ]]>
+        </if>
+
+        <![CDATA[
+        GROUP BY T.PRIORITY
+        ORDER BY
+            CASE T.PRIORITY
+                WHEN 'HIGH' THEN 1
+                WHEN 'MEDIUM' THEN 2
+                WHEN 'LOW' THEN 3
+                ELSE 4
+            END
+    ]]>
+
+    </select>
+
+    <select id="selectReportTasks"
+            resultType="com.tracker.tracker.report.vo.ReportTaskVO">
+
+        <![CDATA[
+        SELECT
+            T.TASK_ID AS taskId,
+            T.TASK_TITLE AS taskTitle,
+            C.TITLE AS categoryName,
+            T.PRIORITY AS priority,
+            T.TASK_STATUS AS taskStatus,
+            TO_CHAR(T.CREATED_DATE, 'YYYY-MM-DD') AS createdDate,
+            TO_CHAR(T.DUE_DATE, 'YYYY-MM-DD') AS dueDate,
+
+            CASE
+                WHEN T.TASK_STATUS = 'DONE'
+                THEN TO_CHAR(TL.COMPLETED_DATE, 'YYYY-MM-DD')
+                ELSE NULL
+            END AS completedDate
+
+        FROM TASK T
+
+        LEFT JOIN TASK_CATEGORY C
+          ON C.CATEGORY_ID = T.CATEGORY_ID
+
+        LEFT JOIN (
+            SELECT
+                TASK_ID,
+                MAX(CREATED_DATE) AS COMPLETED_DATE
+            FROM TASK_LOG
+            WHERE AFTER_STATUS = 'DONE'
+            GROUP BY TASK_ID
+        ) TL
+          ON TL.TASK_ID = T.TASK_ID
+
+        WHERE T.STATUS <> 'DELETED'
+          AND T.USER_ID = #{userId}
+          AND T.DUE_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+          AND T.DUE_DATE < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+    ]]>
+
+        <if test="categoryId != null">
+            <![CDATA[
+            AND T.CATEGORY_ID = #{categoryId}
+        ]]>
+        </if>
+
+        <![CDATA[
+        ORDER BY
+            CASE T.TASK_STATUS
+                WHEN 'DONE' THEN 1
+                WHEN 'DOING' THEN 2
+                WHEN 'TODO' THEN 3
+                ELSE 4
+            END,
+            T.DUE_DATE DESC,
+            T.TASK_ID DESC
+    ]]>
+
+    </select>
+
+    <select id="selectTimeAnalysisTasks"
+            resultType="com.tracker.tracker.report.vo.TimeAnalysisTaskVO">
+
+        <![CDATA[
+        SELECT
+            T.TASK_ID AS taskId,
+            T.TASK_TITLE AS taskTitle,
+            T.CREATED_DATE AS createdDate,
+            T.DUE_DATE AS dueDate,
+            TL.COMPLETED_DATE AS completedDate
+
+        FROM TASK T
+
+        LEFT JOIN (
+            SELECT
+                TASK_ID,
+                MAX(CREATED_DATE) AS COMPLETED_DATE
+            FROM TASK_LOG
+            WHERE AFTER_STATUS = 'DONE'
+            GROUP BY TASK_ID
+        ) TL
+            ON TL.TASK_ID = T.TASK_ID
+
+        WHERE T.STATUS <> 'DELETED'
+          AND T.USER_ID = #{userId}
+          AND T.TASK_STATUS = 'DONE'
+          AND T.DUE_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+          AND T.DUE_DATE < TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+    ]]>
+
+        <if test="categoryId != null">
+            <![CDATA[
+            AND T.CATEGORY_ID = #{categoryId}
+        ]]>
+        </if>
+
+    </select>
+
+
     <!-- 5) 기간별 완료 추이 집계 -->
     <select id="countCompletionTrend"
             resultType="com.tracker.tracker.dashboard.vo.CompletionTrendVO">

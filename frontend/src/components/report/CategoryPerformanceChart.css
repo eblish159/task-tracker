@@ -1,0 +1,121 @@
+.category-performance-chart {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  min-height: 280px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.category-performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.category-performance-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.category-performance-legends {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-legend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.category-legend-color {
+  display: inline-block;
+  width: 10px;
+  height: 6px;
+  border-radius: 999px;
+}
+
+.category-legend-color.done {
+  background: #14b8a6;
+}
+
+.category-legend-color.pending {
+  background: #cbd5e1;
+}
+
+.category-performance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.category-performance-row {
+  display: grid;
+  grid-template-columns: 55px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.category-performance-name {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-performance-bar-area {
+  width: 100%;
+  min-width: 0;
+}
+
+.category-performance-bar {
+  display: flex;
+  overflow: hidden;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 3px;
+}
+
+.category-bar-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 100%;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.category-bar-segment span {
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.category-bar-done {
+  background: #14b8a6;
+  color: #ffffff;
+}
+
+.category-bar-pending {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.category-empty-message {
+  margin-top: 32px;
+  font-size: 14px;
+  color: #64748b;
+}

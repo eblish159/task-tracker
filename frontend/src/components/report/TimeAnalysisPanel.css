@@ -1,0 +1,118 @@
+.time-analysis-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.time-analysis-header {
+  margin-bottom: 18px;
+}
+
+.time-analysis-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.time-analysis-header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.time-analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.time-analysis-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e8eef4;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.time-analysis-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.time-analysis-value {
+  display: block;
+  font-size: 23px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.time-analysis-task-title {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.time-analysis-description {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+@media (max-width: 720px) {
+  .time-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.time-analysis-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.time-analysis-card-header .time-analysis-label {
+  margin-bottom: 0;
+}
+
+.time-analysis-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.time-analysis-icon.icon-blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.time-analysis-icon.icon-teal {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.time-analysis-icon.icon-green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.time-analysis-icon.icon-orange {
+  background: #ffedd5;
+  color: #ea580c;
+}

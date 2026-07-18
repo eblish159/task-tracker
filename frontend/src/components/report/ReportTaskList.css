@@ -1,0 +1,170 @@
+.report-task-list {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.report-task-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.report-task-list-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.report-task-list-header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.report-task-count {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.report-task-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.report-task-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.report-task-table th,
+.report-task-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eef2f7;
+  text-align: left;
+  font-size: 13px;
+}
+
+.report-task-table th {
+  background: #f8fafc;
+  font-weight: 700;
+  color: #475569;
+}
+
+.report-task-table td {
+  color: #334155;
+}
+
+.report-task-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.report-task-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.report-task-title {
+  max-width: 260px;
+  overflow: hidden;
+  font-weight: 600;
+  color: #0f172a;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-priority-badge,
+.report-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.priority-high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.priority-medium {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.priority-low {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-done {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.status-doing {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.status-todo {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.report-task-empty {
+  padding: 48px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.report-task-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.report-task-pagination button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #dbe3ec;
+  border-radius: 7px;
+  background: #ffffff;
+  font-size: 12px;
+  color: #475569;
+  cursor: pointer;
+}
+
+.report-task-pagination button:hover:not(:disabled) {
+  border-color: #14b8a6;
+  color: #0f766e;
+}
+
+.report-task-pagination button.active {
+  border-color: #14b8a6;
+  background: #14b8a6;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.report-task-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}

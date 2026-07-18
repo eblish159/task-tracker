@@ -1,0 +1,48 @@
+.completion-trend-chart {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  min-height: 280px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.completion-trend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.completion-trend-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.completion-trend-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.completion-trend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #14b8a6;
+}
+
+.completion-chart-area {
+  width: 100%;
+  height: 210px;
+}
+
+.completion-empty-message {
+  margin-top: 32px;
+  font-size: 14px;
+  color: #64748b;
+}

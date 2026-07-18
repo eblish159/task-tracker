@@ -3,10 +3,14 @@ package com.tracker.tracker.report.controller;
 import com.tracker.tracker.dashboard.vo.CompletionTrendVO;
 import com.tracker.tracker.dashboard.vo.DashboardResponseVO;
 import com.tracker.tracker.report.service.ReportService;
+import com.tracker.tracker.report.vo.PriorityPerformanceVO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.tracker.tracker.report.vo.CategoryPerformanceVO;
+import com.tracker.tracker.report.vo.ReportTaskVO;
+import com.tracker.tracker.report.vo.TimeAnalysisVO;
 
 import java.util.List;
 
@@ -76,4 +80,85 @@ public class ReportController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/category-performance")
+    public ResponseEntity<List<CategoryPerformanceVO>> getCategoryPerformance(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) Long categoryId,
+            HttpSession session
+    ) {
+        String userId = getLoginUserId(session);
+
+        List<CategoryPerformanceVO> response =
+                reportService.getCategoryPerformance(
+                        userId,
+                        startDate,
+                        endDate,
+                        categoryId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/priority-performance")
+    public ResponseEntity<List<PriorityPerformanceVO>> getPriorityPerformance(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) Long categoryId,
+            HttpSession session
+    ) {
+        String userId = getLoginUserId(session);
+
+        List<PriorityPerformanceVO> response =
+                reportService.getPriorityPerformance(
+                        userId,
+                        startDate,
+                        endDate,
+                        categoryId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/tasks")
+    public ResponseEntity<List<ReportTaskVO>> getReportTasks(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) Long categoryId,
+            HttpSession session
+    ) {
+        String userId = getLoginUserId(session);
+
+        List<ReportTaskVO> response =
+                reportService.getReportTasks(
+                        userId,
+                        startDate,
+                        endDate,
+                        categoryId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/time-analysis")
+    public ResponseEntity<TimeAnalysisVO> getTimeAnalysis(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) Long categoryId,
+            HttpSession session
+    ) {
+        String userId = getLoginUserId(session);
+
+        TimeAnalysisVO response =
+                reportService.getTimeAnalysis(
+                        userId,
+                        startDate,
+                        endDate,
+                        categoryId
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }

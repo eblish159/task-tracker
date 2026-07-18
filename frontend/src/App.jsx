@@ -5,6 +5,8 @@ import TaskCreatePage from "./pages/TaskCreatePage";
 import TaskListPage from "./pages/TaskListPage";
 import LoginPage from "./pages/LoginPage";
 import AppLayout from "./components/layout/AppLayout";
+import ReportsPage from "./pages/ReportsPage";
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -92,7 +94,13 @@ function App() {
                 path="/tasks/new"
                 element={<TaskCreatePage />}
               />
-            </Route>
+
+
+            <Route
+              path="/reports"
+              element={<ReportsPage />}
+            />
+ </Route>
 
             {/* 로그인 상태면 login 접근 막기 */}
             <Route
