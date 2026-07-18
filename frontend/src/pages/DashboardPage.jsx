@@ -10,6 +10,7 @@ import PageHeaderFilter from "../components/common/PageHeaderFilter";
 import {
   getQuickRange,
   getThisMonthRange,
+  getThisWeekRange,
 } from "../utils/dateUtils";
 import {
   getPeriodSummaryLines,
@@ -17,10 +18,17 @@ import {
 } from "../utils/dashboardAnalysis";
 
 export default function DashboardPage() {
-  const [startDate, setStartDate] = useState("2026-02-01");
-  const [endDate, setEndDate] = useState("2026-02-22");
+  const [startDate, setStartDate] = useState(
+    () => getThisWeekRange().startDate
+  );
+
+  const [endDate, setEndDate] = useState(
+    () => getThisWeekRange().endDate
+  );
+
   const [categoryId] = useState("");
-  const [selectedRange, setSelectedRange] = useState(7);
+  const [selectedRange, setSelectedRange] = useState("week");
+
 
   const navigate = useNavigate();
 

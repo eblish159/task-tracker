@@ -42,4 +42,8 @@ public interface TaskDAO {
                     @Param("taskStatus") String taskStatus,
                     @Param("due") String due);
 
+
+    // 더미데이터 초기화용 삭제메서드
+    List<Long> selectTaskIdsByUserId(@Param("userId") String userId);
+    int deleteTasksByUserId(@Param("userId") String userId);
 }

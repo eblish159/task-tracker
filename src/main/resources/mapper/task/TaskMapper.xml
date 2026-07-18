@@ -26,22 +26,26 @@
             keyProperty="taskId"
             keyColumn="TASK_ID">
         <![CDATA[
-        INSERT INTO TASK (
-            TASK_TITLE,
-            TASK_CONTENT,
-            PRIORITY,
-            DUE_DATE,
-            USER_ID,
-            CATEGORY_ID
-        ) VALUES (
-            #{taskTitle, jdbcType=VARCHAR},
-            #{taskContent, jdbcType=VARCHAR},
-            #{priority, jdbcType=VARCHAR},
-            #{dueDate, jdbcType=DATE},
-            #{userId, jdbcType=VARCHAR},
-            #{categoryId, jdbcType=NUMERIC}
-        )
-        ]]>
+    INSERT INTO TASK (
+        TASK_TITLE,
+        TASK_CONTENT,
+        PRIORITY,
+        DUE_DATE,
+        USER_ID,
+        CATEGORY_ID,
+        STATUS,
+        TASK_STATUS
+    ) VALUES (
+        #{taskTitle, jdbcType=VARCHAR},
+        #{taskContent, jdbcType=VARCHAR},
+        #{priority, jdbcType=VARCHAR},
+        #{dueDate, jdbcType=DATE},
+        #{userId, jdbcType=VARCHAR},
+        #{categoryId, jdbcType=NUMERIC},
+        #{status, jdbcType=VARCHAR},
+        #{taskStatus, jdbcType=VARCHAR}
+    )
+    ]]>
     </insert>
 
     <!-- 단건 조회 -->
@@ -305,5 +309,15 @@
             AND TASK_STATUS = #{taskStatus}
         </if>
     </select>
+
+    <!-- 더미데이터 초기화용 삭제매퍼-->
+
+    <select id="selectTaskIdsByUserId" parameterType="String" resultType="Long">
+        SELECT TASK_ID FROM TASK WHERE USER_ID = #{userId}
+    </select>
+
+    <delete id="deleteTasksByUserId" parameterType="String">
+        DELETE FROM TASK WHERE USER_ID = #{userId}
+    </delete>
 
 </mapper>
