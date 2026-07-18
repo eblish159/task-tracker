@@ -8,4 +8,5 @@ import java.util.List;
 public interface DashboardService {
      DashboardResponseVO getDashboard(String userId, String startDate, String endDate, Long categoryId);
      List<CompletionTrendVO> getCompletionTrend(String userId, String startDate, String endDate, Long categoryId, String groupBy);
+
 }

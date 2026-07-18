@@ -10,6 +10,7 @@ public class DashboardResponseVO {
     private int overdueCount;
 
     private List<GroupCountVO> byPriority;
+    private List<GroupCountVO> byStatus;
     private List<GroupCountVO> byCategory;
 
 
@@ -43,6 +44,14 @@ public class DashboardResponseVO {
 
     public void setByPriority(List<GroupCountVO> byPriority) {
         this.byPriority = byPriority;
+    }
+
+    public List<GroupCountVO> getByStatus() {
+        return byStatus;
+    }
+
+    public void setByStatus(List<GroupCountVO> byStatus) {
+        this.byStatus = byStatus;
     }
 
     public List<GroupCountVO> getByCategory() {

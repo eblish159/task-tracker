@@ -40,12 +40,12 @@
         </if>
     </select>
 
-    <!-- 3) 우선순위별 집계 -->
-    <select id="countByPriority"
+    <!-- 3) 상태별 집계 -->
+    <select id="countByStatus"
             resultType="com.tracker.tracker.dashboard.vo.GroupCountVO">
         <![CDATA[
             SELECT
-                PRIORITY AS groupKey,
+                TASK_STATUS AS groupKey,
                 COUNT(*) AS count
             FROM TASK
             WHERE STATUS <> 'DELETED'
@@ -59,9 +59,15 @@
             ]]>
         </if>
         <![CDATA[
-            GROUP BY PRIORITY
-            ORDER BY COUNT(*) DESC
-        ]]>
+        GROUP BY TASK_STATUS
+        ORDER BY
+            CASE TASK_STATUS
+                WHEN 'TODO' THEN 1
+                WHEN 'DOING' THEN 2
+                WHEN 'DONE' THEN 3
+                ELSE 4
+            END
+    ]]>
     </select>
 
     <!-- 4) 카테고리별 집계 (설계1: 전체 분포 유지) -->

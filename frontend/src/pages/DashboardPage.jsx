@@ -120,18 +120,18 @@ export default function DashboardPage() {
                 icon="📊"
               />
               <SummaryCard
-                title="오늘 마감"
+                              title="지연 작업 수(전체 기간)"
+                              value={`${overdueTasks.length}건`}
+                              subtitle="작업 목록에서 확인 →"
+                              icon="⚠️"
+                              onClick={() => navigate("/tasks?due=overdue")}
+                            />
+              <SummaryCard
+                title="오늘 마감 작업"
                 value={`${todayTasks.length}건`}
                 subtitle="작업 목록에서 확인 →"
                 icon="📅"
                 onClick={() => navigate("/tasks?due=today")}
-              />
-              <SummaryCard
-                title="지연 작업"
-                value={`${overdueTasks.length}건`}
-                subtitle="작업 목록에서 확인 →"
-                icon="⚠️"
-                onClick={() => navigate("/tasks?due=overdue")}
               />
             </div>
 
@@ -156,8 +156,8 @@ export default function DashboardPage() {
               />
 
               <DonutChartBox
-                title="우선순위별 분포"
-                items={data.byPriority}
+                title="상태별 분포"
+                items={data.byStatus}
               />
             </div>
 
@@ -169,17 +169,6 @@ export default function DashboardPage() {
                 marginBottom: 14,
               }}
             >
-              <AnalysisBox
-                title="이번 기간 요약"
-                icon="📌"
-                lines={getPeriodSummaryLines(data)}
-              />
-
-              <AnalysisBox
-                title="분석 코멘트"
-                icon="💡"
-                lines={getDashboardCommentLines(todayTasks, overdueTasks)}
-              />
             </div>
           </>
         )}

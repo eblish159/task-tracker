@@ -35,7 +35,7 @@ public class DashboardServiceImpl implements DashboardService {
         // ✅ categoryId 필터 적용되는 집계들
         int total = dashboardDAO.countTotalTasks(userId, startDate, endDate, categoryId);
         int done = dashboardDAO.countDoneTasks(userId, startDate, endDate, categoryId);
-        List<GroupCountVO> byPriority = dashboardDAO.countByPriority(userId, startDate, endDate, categoryId);
+        List<GroupCountVO> byStatus = dashboardDAO.countByStatus(userId, startDate, endDate, categoryId);
 
         // ✅ 설계 1: 카테고리별 분포는 전체 유지 (categoryId 미적용)
         List<GroupCountVO> byCategory = dashboardDAO.countByCategory(userId, startDate, endDate);
@@ -46,7 +46,7 @@ public class DashboardServiceImpl implements DashboardService {
         response.setTotalCount(total);
         response.setDoneCount(done);
         response.setDoneRate(doneRate);
-        response.setByPriority(byPriority);
+        response.setByStatus(byStatus);
         response.setByCategory(byCategory);
 
         return response;

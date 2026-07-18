@@ -21,7 +21,7 @@ public interface DashboardDAO {
 
 
 
-    List<GroupCountVO> countByPriority(@Param("userId") String userId ,
+    List<GroupCountVO> countByStatus(@Param("userId") String userId ,
                                        @Param("startDate") String startDate,
                                        @Param("endDate") String endDate,
                                        @Param("categoryId") Long categoryId);
