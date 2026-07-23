@@ -11,4 +11,6 @@ public interface TaskLogService {
 
     List<TaskLogVO> getTaskLogsByTaskId(Long taskId);
 
+    List<TaskLogVO>  getRecentActivities(String userId, int limit);
+
 }

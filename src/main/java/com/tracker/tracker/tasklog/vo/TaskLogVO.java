@@ -10,6 +10,11 @@ public class TaskLogVO {
     private String beforeStatus;
     private String afterStatus;
     private Date createdDate;
+    private String taskTitle;
+
+    public String getTaskTitle() { return taskTitle; }
+
+    public void setTaskTitle(String taskTitle) { this.taskTitle = taskTitle; }
 
     public Long getLogId() {
         return logId;

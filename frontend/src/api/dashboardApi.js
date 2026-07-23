@@ -57,3 +57,18 @@ export async function fetchDailyTrend(startDate, endDate, categoryId, groupBy) {
 
     return res.json();
     }
+
+export async function fetchRecentActivities(limit = 5) {
+  const qs = new URLSearchParams({ limit });
+
+  const res = await fetch(`/api/tasks/recent-activities?${qs.toString()}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `최근 활동 조회 실패 (HTTP ${res.status})`);
+  }
+
+  return res.json();
+}

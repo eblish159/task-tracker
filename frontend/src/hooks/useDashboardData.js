@@ -3,6 +3,7 @@ import {
     fetchDashboard,
     fetchTodayTasks,
     fetchOverdueTasks,
+    fetchRecentActivities,
     } from "../api/dashboardApi";
 import { fetchCategories } from "../api/categoryApi";
 
@@ -17,6 +18,7 @@ export default function useDashboardData(startDate, endDate, categoryId) {
 
   const [todayTasks, setTodayTasks] = useState([]);
   const [overdueTasks, setOverdueTasks] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
 
   async function load() {
     setError("");
@@ -29,19 +31,22 @@ export default function useDashboardData(startDate, endDate, categoryId) {
     try {
           setLoading(true);
 
-          const [dashboardResult, todayResult, overdueResult] = await Promise.all([
+          const [dashboardResult, todayResult, overdueResult, recentResult] = await Promise.all([
             fetchDashboard(startDate, endDate, categoryId),
             fetchTodayTasks(),
             fetchOverdueTasks(),
+            fetchRecentActivities(5),
           ]);
 
           setData(dashboardResult);
           setTodayTasks(Array.isArray(todayResult) ? todayResult : []);
           setOverdueTasks(Array.isArray(overdueResult) ? overdueResult : []);
+          setRecentActivities(Array.isArray(recentResult) ? recentResult : []);
         } catch (e) {
           setData(null);
           setTodayTasks([]);
           setOverdueTasks([]);
+          setRecentActivities([]);
           setError(e?.message || "조회 실패");
         } finally {
           setLoading(false);
@@ -79,6 +84,7 @@ export default function useDashboardData(startDate, endDate, categoryId) {
                 categoryError,
                 todayTasks,
                 overdueTasks,
+                recentActivities,
                 load,
                 };
   }

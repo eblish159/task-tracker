@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import PageHeaderFilter from "../components/common/PageHeaderFilter";
 import TodayTaskListCard from "../components/dashboard/TodayTaskListCard";
 import OverdueTopThreeCard from "../components/dashboard/OverdueTopThreeCard";
+import RecentActivityCard from "../components/dashboard/RecentActivityCard";
+import ReportBannerCard from "../components/dashboard/ReportBannerCard";
 import {
   getQuickRange,
   getThisMonthRange,
@@ -40,6 +42,7 @@ export default function DashboardPage() {
     data,
     todayTasks,
     overdueTasks,
+    recentActivities,
     load,
   } = useDashboardData(startDate, endDate, categoryId);
 
@@ -173,15 +176,26 @@ export default function DashboardPage() {
 
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                display: "flex",              // ← grid에서 flex로 변경
                 gap: 12,
                 marginBottom: 14,
+                alignItems: "stretch",
               }}
             >
-             <TodayTaskListCard tasks={todayTasks} />
-             <OverdueTopThreeCard tasks={overdueTasks} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <TodayTaskListCard tasks={todayTasks} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <OverdueTopThreeCard tasks={overdueTasks} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <RecentActivityCard activities={recentActivities} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <ReportBannerCard />
+              </div>
             </div>
+
           </>
         )}
       </div>

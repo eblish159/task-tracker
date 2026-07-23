@@ -3,6 +3,10 @@
   border-radius: 12px;
   padding: 18px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  height: 300px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .overdue-top3-card__header {
@@ -10,6 +14,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
 .overdue-top3-card__title {
@@ -35,6 +40,8 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .overdue-top3-card__item {

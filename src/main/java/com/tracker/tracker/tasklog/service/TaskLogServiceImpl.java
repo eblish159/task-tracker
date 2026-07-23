@@ -25,4 +25,10 @@ public class TaskLogServiceImpl implements TaskLogService {
         return taskLogDAO.selectTaskLogsByTaskId(taskId);
     }
 
+    @Override
+    public List<TaskLogVO> getRecentActivities(String userId, int limit) {
+
+        return  taskLogDAO.selectRecentActivities(userId, limit);
+    }
+
 }

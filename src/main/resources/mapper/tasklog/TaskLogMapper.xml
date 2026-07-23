@@ -54,7 +54,9 @@
             resultType="com.tracker.tracker.tasklog.vo.TaskLogVO">
         <![CDATA[
     SELECT
+
         L.LOG_ID        AS logId,
+        L.USER_ID       AS userId,
         L.TASK_ID       AS taskId,
         T.TASK_TITLE    AS taskTitle,
         L.ACTION_TYPE   AS actionType,
