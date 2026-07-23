@@ -50,5 +50,25 @@
         </foreach>
     </delete>
 
+    <select id="selectRecentActivities"
+            resultType="com.tracker.tracker.tasklog.vo.TaskLogVO">
+        <![CDATA[
+    SELECT
+        L.LOG_ID        AS logId,
+        L.TASK_ID       AS taskId,
+        T.TASK_TITLE    AS taskTitle,
+        L.ACTION_TYPE   AS actionType,
+        L.BEFORE_STATUS AS beforeStatus,
+        L.AFTER_STATUS  AS afterStatus,
+        L.CREATED_DATE  AS createdDate
+    FROM TASK_LOG L
+    JOIN TASK T
+      ON T.TASK_ID = L.TASK_ID
+    WHERE L.USER_ID = #{userId}
+    ORDER BY L.CREATED_DATE DESC
+    FETCH FIRST #{limit} ROWS ONLY
+    ]]>
+    </select>
+
 
 </mapper>

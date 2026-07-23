@@ -7,6 +7,8 @@ import DashboardFilter from "../components/dashboard/DashboardFilter";
 import useDashboardData from "../hooks/useDashboardData";
 import { useNavigate } from "react-router-dom";
 import PageHeaderFilter from "../components/common/PageHeaderFilter";
+import TodayTaskListCard from "../components/dashboard/TodayTaskListCard";
+import OverdueTopThreeCard from "../components/dashboard/OverdueTopThreeCard";
 import {
   getQuickRange,
   getThisMonthRange,
@@ -19,15 +21,15 @@ import {
 
 export default function DashboardPage() {
   const [startDate, setStartDate] = useState(
-    () => getThisWeekRange().startDate
+    () => getQuickRange(7).startDate
   );
 
   const [endDate, setEndDate] = useState(
-    () => getThisWeekRange().endDate
+    () => getQuickRange(7).endDate
   );
 
+  const [selectedRange, setSelectedRange] = useState(7);
   const [categoryId] = useState("");
-  const [selectedRange, setSelectedRange] = useState("week");
 
 
   const navigate = useNavigate();
@@ -177,6 +179,8 @@ export default function DashboardPage() {
                 marginBottom: 14,
               }}
             >
+             <TodayTaskListCard tasks={todayTasks} />
+             <OverdueTopThreeCard tasks={overdueTasks} />
             </div>
           </>
         )}

@@ -8,6 +8,7 @@ import PriorityPerformanceChart from "../components/report/PriorityPerformanceCh
 import ReportTaskList from "../components/report/ReportTaskList";
 import TimeAnalysisPanel from "../components/report/TimeAnalysisPanel";
 import AnalysisComments from "../components/report/AnalysisComments";
+import { getQuickRange } from "../utils/dateUtils";
 
 
 function ReportsPage() {
@@ -19,8 +20,13 @@ function ReportsPage() {
   const [reportTasks, setReportTasks] = useState([]);
   const [timeAnalysis, setTimeAnalysis] = useState(null);
 
-  const [startDate, setStartDate] = useState("2026-02-01");
-  const [endDate, setEndDate] = useState("2026-02-22");
+
+ const [startDate, setStartDate] = useState(
+   () => getQuickRange(7).startDate
+ );
+ const [endDate, setEndDate] = useState(
+   () => getQuickRange(7).endDate
+ );
 
   const fetchReports = () => {
     setLoading(true);

@@ -16,4 +16,6 @@ public interface TaskLogDAO {
 
     // 더미데이터 자동삭제 메서드
     int deleteTaskLogsByTaskIds(@Param("taskIds") List<Long> taskIds);
+
+    List<TaskLogVO> selectRecentActivities(@Param("userId") String userId, @Param("limit") int limit);
 }

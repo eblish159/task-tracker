@@ -3,6 +3,7 @@ package com.tracker.tracker.config;
 import com.tracker.tracker.task.dao.TaskDAO;
 import com.tracker.tracker.task.vo.TaskVO;
 import com.tracker.tracker.tasklog.dao.TaskLogDAO;
+import com.tracker.tracker.tasklog.vo.TaskLogVO;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -69,8 +70,24 @@ public class DemoDataSeeder implements CommandLineRunner {
         taskDAO.deleteTasksByUserId(USER_ID);
 
         List<TaskVO> tasks = buildDemoTasks();
+        Random random = new Random();
+
         for (TaskVO task : tasks) {
-            taskDAO.insertTask(task);
+            taskDAO.insertTask(task); // useGeneratedKeys=true라 이 시점에 task.getTaskId()가 채워짐
+
+            if ("DONE".equals(task.getTaskStatus())) {
+                Date completedDate = randomDateBetween(task.getCreatedDate(), task.getDueDate(), random);
+
+                TaskLogVO log = new TaskLogVO();
+                log.setTaskId(task.getTaskId());
+                log.setUserId(USER_ID);
+                log.setActionType("STATUS_CHANGE");
+                log.setBeforeStatus("DOING");
+                log.setAfterStatus("DONE");
+                log.setCreatedDate(completedDate);
+
+                taskLogDAO.insertTaskLog(log);
+            }
         }
 
         System.out.println("[DemoDataSeeder] 오늘(" + new Date() + ") 기준 데모 데이터 "
@@ -137,7 +154,17 @@ public class DemoDataSeeder implements CommandLineRunner {
         return tasks;
     }
 
-
+    /**
+     * start ~ end 사이의 임의의 날짜(시간 포함)를 반환한다.
+     * end가 start보다 앞서는 경우(마감일이 생성일보다 이른 경우)를 대비해 방어 처리한다.
+     */
+    private Date randomDateBetween(Date start, Date end, Random random) {
+        long startMillis = start.getTime();
+        long endMillis = Math.max(end.getTime(), startMillis);
+        long diff = endMillis - startMillis;
+        long randomMillis = startMillis + (long) (random.nextDouble() * diff);
+        return new Date(randomMillis);
+    }
 
     private Date today() {
         Calendar cal = Calendar.getInstance();
