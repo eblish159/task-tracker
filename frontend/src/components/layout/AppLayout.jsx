@@ -47,6 +47,10 @@ export default function AppLayout({ setIsLoggedIn }){
                             작업등록
                         </NavLink>
 
+                        <NavLink to="/reports">
+                            리포트
+                        </NavLink>
+
                     </nav>
 
                 </div>

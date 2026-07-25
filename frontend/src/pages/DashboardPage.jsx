@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./DashboardPage.css";
 import DailyTrendChart from "../components/dashboard/DailyTrendChart";
 import AnalysisBox from "../components/dashboard/AnalysisBox";
 import SummaryCard from "../components/dashboard/SummaryCard";
@@ -63,142 +64,98 @@ export default function DashboardPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f3f6fb",
-        padding: 24,
-      }}
-    >
-      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <PageHeaderFilter
-          title="Dashboard"
-          description="작업 현황과 통계를 한눈에 확인하세요."
-          startDate={startDate}
-          endDate={endDate}
-          loading={loading}
-          onChangeStartDate={setStartDate}
-          onChangeEndDate={setEndDate}
-          onApply={load}
-          buttonText="필터 적용"
-        />
+    <div className="dashboard-container">
+      <PageHeaderFilter
+        title="Dashboard"
+        description="작업 현황과 통계를 한눈에 확인하세요."
+        startDate={startDate}
+        endDate={endDate}
+        loading={loading}
+        onChangeStartDate={setStartDate}
+        onChangeEndDate={setEndDate}
+        onApply={load}
+        buttonText="필터 적용"
+      />
 
-        <DashboardFilter
-          selectedRange={selectedRange}
-          onQuickRange={setQuickRange}
-          onThisMonth={setThisMonth}
-        />
+      <DashboardFilter
+        selectedRange={selectedRange}
+        onQuickRange={setQuickRange}
+        onThisMonth={setThisMonth}
+      />
 
-        {error && (
-          <div
-            style={{
-              marginBottom: 14,
-              padding: 12,
-              border: "1px solid #f2b8b5",
-              background: "#fff5f5",
-              borderRadius: 10,
-              color: "#b42318",
-            }}
-          >
-            {error}
+      {error && <div className="dashboard-error-banner">{error}</div>}
+
+      {data && (
+        <>
+          <div className="dashboard-summary-grid">
+            <SummaryCard
+              title="총 작업"
+              value={data.totalCount}
+              subtitle="선택 기간"
+              icon="📋"
+            />
+            <SummaryCard
+              title="완료된 작업"
+              value={data.doneCount}
+              subtitle="선택 기간"
+              icon="✅"
+            />
+            <SummaryCard
+              title="완료율"
+              value={`${data.doneRate}%`}
+              subtitle="선택 기간"
+              icon="📊"
+            />
+            <SummaryCard
+              title="지연 작업 수(전체 기간)"
+              value={`${overdueTasks.length}건`}
+              subtitle="작업 목록에서 확인 →"
+              icon="⚠️"
+              onClick={() => navigate("/tasks?due=overdue")}
+            />
+            <SummaryCard
+              title="오늘 마감 작업"
+              value={`${todayTasks.length}건`}
+              subtitle="작업 목록에서 확인 →"
+              icon="📅"
+              onClick={() => navigate("/tasks?due=today")}
+            />
           </div>
-        )}
 
-        {data && (
-          <>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(5, minmax(150px, 1fr))",
-                gap: 12,
-                marginBottom: 14,
-              }}
-            >
-              <SummaryCard
-                title="총 작업"
-                value={data.totalCount}
-                subtitle="선택 기간"
-                icon="📋"
-              />
-              <SummaryCard
-                title="완료된 작업"
-                value={data.doneCount}
-                subtitle="선택 기간"
-                icon="✅"
-              />
-              <SummaryCard
-                title="완료율"
-                value={`${data.doneRate}%`}
-                subtitle="선택 기간"
-                icon="📊"
-              />
-              <SummaryCard
-                              title="지연 작업 수(전체 기간)"
-                              value={`${overdueTasks.length}건`}
-                              subtitle="작업 목록에서 확인 →"
-                              icon="⚠️"
-                              onClick={() => navigate("/tasks?due=overdue")}
-                            />
-              <SummaryCard
-                title="오늘 마감 작업"
-                value={`${todayTasks.length}건`}
-                subtitle="작업 목록에서 확인 →"
-                icon="📅"
-                onClick={() => navigate("/tasks?due=today")}
-              />
+          <div className="dashboard-chart-row">
+            <DailyTrendChart
+              startDate={startDate}
+              endDate={endDate}
+              categoryId={categoryId}
+            />
+
+            <DonutChartBox
+              title="카테고리별 작업 분포"
+              items={data.byCategory}
+            />
+
+            <DonutChartBox
+              title="상태별 분포"
+              items={data.byStatus}
+            />
+          </div>
+
+          <div className="dashboard-bottom-row">
+            <div className="dashboard-bottom-row__item">
+              <TodayTaskListCard tasks={todayTasks} />
             </div>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1.35fr 1fr 1fr",
-                gap: 12,
-                marginBottom: 14,
-                alignItems: "stretch",
-              }}
-            >
-              <DailyTrendChart
-                startDate={startDate}
-                endDate={endDate}
-                categoryId={categoryId}
-              />
-
-              <DonutChartBox
-                title="카테고리별 작업 분포"
-                items={data.byCategory}
-              />
-
-              <DonutChartBox
-                title="상태별 분포"
-                items={data.byStatus}
-              />
+            <div className="dashboard-bottom-row__item">
+              <OverdueTopThreeCard tasks={overdueTasks} />
             </div>
-
-            <div
-              style={{
-                display: "flex",              // ← grid에서 flex로 변경
-                gap: 12,
-                marginBottom: 14,
-                alignItems: "stretch",
-              }}
-            >
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <TodayTaskListCard tasks={todayTasks} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <OverdueTopThreeCard tasks={overdueTasks} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <RecentActivityCard activities={recentActivities} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <ReportBannerCard />
-              </div>
+            <div className="dashboard-bottom-row__item">
+              <RecentActivityCard activities={recentActivities} />
             </div>
-
-          </>
-        )}
-      </div>
+            <div className="dashboard-bottom-row__item">
+              <ReportBannerCard />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

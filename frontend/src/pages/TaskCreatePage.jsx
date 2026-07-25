@@ -4,6 +4,11 @@ import { fetchCategories } from "../api/categoryApi";
 import { createTask } from "../api/taskApi";
 import "./TaskCreatePage.css";
 
+function toApiDate(v) {
+  if (!v) return null;
+  return `${v}T00:00:00`;
+}
+
 export default function TaskCreatePage() {
   const navigate = useNavigate();
 
@@ -49,7 +54,7 @@ export default function TaskCreatePage() {
       taskTitle: taskTitle.trim(),
       taskContent: taskContent.trim() ? taskContent.trim() : null,
       priority,
-      dueDate: dueDate ? dueDate : null,
+      dueDate: dueDate ? toApiDate(dueDate) : null,
       categoryId: Number(categoryId),
     };
 
