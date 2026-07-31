@@ -128,6 +128,21 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Task 수정에 실패했습니다.");
         }
 
+        String beforeStatus = existing.getTaskStatus();
+        String afterStatus = taskVO.getTaskStatus();
+
+        if (afterStatus != null && !afterStatus.equals(beforeStatus)) {
+            TaskLogVO log = new TaskLogVO();
+            log.setTaskId(taskVO.getTaskId());
+            log.setUserId(taskVO.getUserId());
+            log.setActionType("STATUS_CHANGE");
+            log.setBeforeStatus(beforeStatus);
+            log.setAfterStatus(afterStatus);
+
+            taskLogService.saveLog(log);
+        }
+
+
         return selectTaskById(taskVO.getTaskId());
     }
 

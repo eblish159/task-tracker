@@ -7,6 +7,8 @@ import {
   updateTask,
   updateTaskStatus,
 } from "../api/taskApi";
+import { fetchCategories } from "../api/categoryApi";
+import "./TaskListPage.css";
 
 function formatDate(v) {
   if (!v) return "";
@@ -27,42 +29,22 @@ const INITIAL_EDIT_FORM = {
   taskStatus: "TODO",
 };
 
-function getTaskStatusStyle(taskStatus) {
-  const value = (taskStatus || "TODO").toUpperCase();
-
-  if (value === "DONE") {
-    return {
-      display: "inline-block",
-      padding: "4px 10px",
-      borderRadius: 999,
-      background: "#ecfdf5",
-      color: "#065f46",
-      fontWeight: 600,
-      fontSize: 13,
-    };
-  }
-
-  if (value === "DOING") {
-    return {
-      display: "inline-block",
-      padding: "4px 10px",
-      borderRadius: 999,
-      background: "#eff6ff",
-      color: "#1d4ed8",
-      fontWeight: 600,
-      fontSize: 13,
-    };
-  }
-
-  return {
-    display: "inline-block",
-    padding: "4px 10px",
-    borderRadius: 999,
-    background: "#f3f4f6",
-    color: "#374151",
-    fontWeight: 600,
-    fontSize: 13,
-  };
+function ConfirmModal({ message, onConfirm, onCancel }) {
+  return (
+    <div className="confirm-modal-overlay" onClick={onCancel}>
+      <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+        <p className="confirm-modal__message">{message}</p>
+        <div className="confirm-modal__actions">
+          <button className="confirm-modal__cancel" onClick={onCancel}>
+            취소
+          </button>
+          <button className="confirm-modal__confirm" onClick={onConfirm}>
+            삭제
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function TaskListPage() {
@@ -80,10 +62,25 @@ export default function TaskListPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [categoryId, setCategoryId] = useState("");
+  const [categories, setCategories] = useState([]);
   const [searchParams] = useSearchParams();
   const due = searchParams.get("due");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyTask, setHistoryTask] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const list = await fetchCategories();
+        setCategories(Array.isArray(list) ? list : []);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    loadCategories();
+  }, []);
 
   async function load(page = currentPage) {
     setError("");
@@ -183,6 +180,13 @@ export default function TaskListPage() {
 
     try {
       await updateTask(editingTaskId, payload);
+
+      // 방금 수정한 작업의 이력 모달이 열려있다면, 최신 데이터로 다시 보도록 닫아준다.
+      if (historyOpen && historyTask?.taskId === editingTaskId) {
+        setHistoryOpen(false);
+        setHistoryTask(null);
+      }
+
       cancelEdit();
       await load(currentPage);
     } catch (e) {
@@ -190,15 +194,19 @@ export default function TaskListPage() {
     }
   }
 
-  async function onDelete(task) {
-    const id = task.taskId;
-
-    if (id == null) {
+  function requestDelete(task) {
+    if (task.taskId == null) {
       alert("taskId가 없습니다.");
       return;
     }
 
-    if (!window.confirm("삭제할까요?")) return;
+    setDeleteTarget(task);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    const id = deleteTarget.taskId;
 
     try {
       await deleteTask(id);
@@ -210,7 +218,13 @@ export default function TaskListPage() {
       await load(currentPage);
     } catch (e) {
       alert(e?.message || "삭제 실패");
+    } finally {
+      setDeleteTarget(null);
     }
+  }
+
+  function cancelDelete() {
+    setDeleteTarget(null);
   }
 
   async function onChangeTaskStatus(task, nextTaskStatus) {
@@ -223,6 +237,12 @@ export default function TaskListPage() {
 
     try {
       await updateTaskStatus(id, nextTaskStatus);
+
+      if (historyOpen && historyTask?.taskId === id) {
+        setHistoryOpen(false);
+        setHistoryTask(null);
+      }
+
       await load(currentPage);
     } catch (e) {
       alert(e?.message || "상태 변경 실패");
@@ -235,10 +255,10 @@ export default function TaskListPage() {
   }
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: 16 }}>
-      <h2 style={{ marginBottom: 8 }}>Tasks</h2>
+    <div className="task-list-page">
+      <h2 className="task-list-title">Tasks</h2>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+      <div className="task-list-toolbar">
         <button onClick={() => load(currentPage)} disabled={loading}>
           {loading ? "로딩..." : "새로고침"}
         </button>
@@ -250,16 +270,11 @@ export default function TaskListPage() {
             onChange={(e) => setCategoryId(e.target.value)}
           >
             <option value="">전체</option>
-            <option value="1">개발</option>
-            <option value="2">운동</option>
-            <option value="3">회의</option>
-            <option value="4">문서</option>
-            <option value="5">테스트</option>
-            <option value="6">버그</option>
-            <option value="7">배포</option>
-            <option value="8">디자인</option>
-            <option value="9">학습</option>
-            <option value="10">개인</option>
+            {categories.map((c) => (
+              <option key={c.categoryId} value={c.categoryId}>
+                {c.categoryName}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -276,28 +291,15 @@ export default function TaskListPage() {
           </select>
         </label>
 
-        <span style={{ marginLeft: 12, color: "#555" }}>
+        <span className="task-list-toolbar__count">
           전체 {totalCount}개
         </span>
       </div>
 
-      {error && (
-        <div style={{ marginBottom: 12, color: "crimson" }}>
-          {error}
-        </div>
-      )}
+      {error && <div className="task-list-error">{error}</div>}
 
-      <div style={{ border: "1px solid #ddd", borderRadius: 8, overflow: "hidden" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
-            background: "#f7f7f7",
-            padding: 16,
-            fontWeight: 600,
-            columnGap: 20,
-          }}
-        >
+      <div className="task-table">
+        <div className="task-table__header">
           <div>제목/내용</div>
           <div>우선순위</div>
           <div>마감일</div>
@@ -306,9 +308,7 @@ export default function TaskListPage() {
         </div>
 
         {tasks.length === 0 && (
-          <div style={{ padding: 16, color: "#666" }}>
-            해당 작업이 없습니다.
-          </div>
+          <div className="task-table__empty">해당 작업이 없습니다.</div>
         )}
 
         {tasks.map((task) => {
@@ -322,39 +322,19 @@ export default function TaskListPage() {
           const isEditing = editingTaskId === id;
 
           return (
-            <div
-              key={id}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "2fr 1fr 1fr 1fr 160px",
-                padding: 16,
-                borderTop: "1px solid #eee",
-                alignItems: "center",
-                columnGap: 20,
-              }}
-            >
+            <div key={id} className="task-table__row">
               <div>
                 {!isEditing ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div style={{ fontWeight: 600 }}>{title}</div>
+                  <div className="task-title-cell">
+                    <div className="task-title-cell__title">{title}</div>
                     {content && (
-                      <div
-                        style={{
-                          color: "#666",
-                          fontSize: 13,
-                          lineHeight: 1.5,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
+                      <div className="task-title-cell__content">
                         {content}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div className="task-edit-form">
                     <input
                       name="taskTitle"
                       value={editForm.taskTitle}
@@ -367,14 +347,6 @@ export default function TaskListPage() {
                       onChange={onChangeEditForm}
                       placeholder="내용"
                       rows={4}
-                      style={{
-                        width: "100%",
-                        minHeight: 100,
-                        resize: "vertical",
-                        padding: "8px 10px",
-                        boxSizing: "border-box",
-                        lineHeight: 1.5,
-                      }}
                     />
                   </div>
                 )}
@@ -432,43 +404,46 @@ export default function TaskListPage() {
                 )}
               </div>
 
-              <div style={{ display: "flex", gap: 8, whiteSpace: "nowrap", flexWrap: "wrap" }}>
+              <div className="task-actions">
                 {!isEditing ? (
                   <>
-                      <button
-                          style={{ padding: "4px 10px", color: "#2563eb" }}
-                          onClick={() => startEdit(task)}
-                      >
-                          수정
-                      </button>
+                    <button
+                      className="task-actions__edit"
+                      onClick={() => startEdit(task)}
+                    >
+                      수정
+                    </button>
 
-                      <button
-                          style={{ padding: "4px 10px", color: "#dc2626" }}
-                          onClick={() => onDelete(task)}
-                      >
-                          삭제
-                      </button>
+                    <button
+                      className="task-actions__delete"
+                      onClick={() => requestDelete(task)}
+                    >
+                      삭제
+                    </button>
 
-                      <button
-                          style={{ padding: "4px 10px", color: "#059669" }}
-                          onClick={() => {
-                              setHistoryTask(task);
-                              setHistoryOpen(true);
-                          }}
-                      >
-                          이력
-                      </button>
+                    <button
+                      className="task-actions__history"
+                      onClick={() => {
+                        setHistoryTask(task);
+                        setHistoryOpen(true);
+                      }}
+                    >
+                      이력
+                    </button>
                   </>
                 ) : (
                   <>
                     <button
-                      style={{ padding: "4px 10px", color: "#2563eb" }}
+                      className="task-actions__save"
                       onClick={saveEdit}
                     >
                       수정완료
                     </button>
 
-                    <button style={{ padding: "4px 10px" }} onClick={cancelEdit}>
+                    <button
+                      className="task-actions__cancel"
+                      onClick={cancelEdit}
+                    >
                       취소
                     </button>
                   </>
@@ -477,18 +452,9 @@ export default function TaskListPage() {
             </div>
           );
         })}
-
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 8,
-          marginTop: 16,
-        }}
-      >
+      <div className="task-pagination">
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage <= 1}
@@ -501,10 +467,11 @@ export default function TaskListPage() {
             key={pageNum}
             onClick={() => goToPage(pageNum)}
             disabled={pageNum === currentPage}
-            style={{
-              fontWeight: pageNum === currentPage ? 700 : 400,
-              minWidth: 32,
-            }}
+            className={
+              pageNum === currentPage
+                ? "task-pagination__page task-pagination__page--active"
+                : "task-pagination__page"
+            }
           >
             {pageNum}
           </button>
@@ -517,15 +484,24 @@ export default function TaskListPage() {
           다음
         </button>
       </div>
+
       {historyOpen && (
-              <TaskHistory
-                  task={historyTask}
-                  onClose={() => {
-                      setHistoryOpen(false);
-                      setHistoryTask(null);
-                  }}
-              />
-          )}
+        <TaskHistory
+          task={historyTask}
+          onClose={() => {
+            setHistoryOpen(false);
+            setHistoryTask(null);
+          }}
+        />
+      )}
+
+      {deleteTarget && (
+        <ConfirmModal
+          message={`"${deleteTarget.taskTitle}" 작업을 삭제할까요?`}
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
     </div>
   );
 }
