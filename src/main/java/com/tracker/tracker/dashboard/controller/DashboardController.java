@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.tracker.tracker.common.util.SessionUtils;
 
 import java.util.List;
 
@@ -20,16 +21,7 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    private String getLoginUserId(HttpSession session) {
 
-        String userId = (String) session.getAttribute("userId");
-
-        if (userId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
-
-        return userId;
-    }
 
 
     @GetMapping
@@ -40,7 +32,7 @@ public class DashboardController {
             HttpSession session
     ) {
 
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         DashboardResponseVO response =
                 dashboardService.getDashboard(
@@ -63,7 +55,7 @@ public class DashboardController {
             HttpSession session
     ) {
 
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         List<CompletionTrendVO> response =
                 dashboardService.getCompletionTrend(

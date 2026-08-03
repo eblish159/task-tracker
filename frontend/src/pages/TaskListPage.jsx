@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import TaskHistory from "../components/TaskHistory";
+import TaskDetailPage from "../components/TaskDetailPage";
 import {
   deleteTask,
   fetchTasks,
@@ -68,6 +69,7 @@ export default function TaskListPage() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyTask, setHistoryTask] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [detailTaskId, setDetailTaskId] = useState(null);
 
   useEffect(() => {
     async function loadCategories() {
@@ -326,7 +328,13 @@ export default function TaskListPage() {
               <div>
                 {!isEditing ? (
                   <div className="task-title-cell">
-                    <div className="task-title-cell__title">{title}</div>
+                    <div
+                      className="task-title-cell__title"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setDetailTaskId(id)}
+                    >
+                      {title}
+                    </div>
                     {content && (
                       <div className="task-title-cell__content">
                         {content}
@@ -500,6 +508,14 @@ export default function TaskListPage() {
           message={`"${deleteTarget.taskTitle}" 작업을 삭제할까요?`}
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
+        />
+      )}
+
+      {detailTaskId != null && (
+        <TaskDetailPage
+          taskId={detailTaskId}
+          onClose={() => setDetailTaskId(null)}
+          onChanged={() => load(currentPage)}
         />
       )}
     </div>

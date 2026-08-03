@@ -37,6 +37,20 @@ export async function fetchTasks(params = {}) {
   return res.json();
 }
 
+export async function fetchTaskById(taskId) {
+  const res = await fetch(`/api/tasks/${taskId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `Task 조회 실패 (HTTP ${res.status})`);
+  }
+
+  return res.json();
+}
+
 export async function updateTask(taskId, payload) {
   const res = await fetch(`/api/tasks/${taskId}`, {
     method: "PUT",

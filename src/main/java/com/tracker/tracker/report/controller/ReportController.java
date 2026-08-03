@@ -1,5 +1,6 @@
 package com.tracker.tracker.report.controller;
 
+import com.tracker.tracker.common.util.SessionUtils;
 import com.tracker.tracker.dashboard.vo.CompletionTrendVO;
 import com.tracker.tracker.dashboard.vo.DashboardResponseVO;
 import com.tracker.tracker.report.service.ReportService;
@@ -24,16 +25,6 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    private String getLoginUserId(HttpSession session) {
-
-        String userId = (String) session.getAttribute("userId");
-
-        if (userId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
-
-        return userId;
-    }
 
 
     @GetMapping("/summary")
@@ -44,7 +35,7 @@ public class ReportController {
             HttpSession session
     ) {
 
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         DashboardResponseVO response =
                 reportService.getSummary(
@@ -67,7 +58,7 @@ public class ReportController {
             HttpSession session
     ) {
 
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         List<CompletionTrendVO> response =
                 reportService.getCompletionTrend(
@@ -88,7 +79,7 @@ public class ReportController {
             @RequestParam(required = false) Long categoryId,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         List<CategoryPerformanceVO> response =
                 reportService.getCategoryPerformance(
@@ -107,7 +98,7 @@ public class ReportController {
             @RequestParam(required = false) Long categoryId,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         List<PriorityPerformanceVO> response =
                 reportService.getPriorityPerformance(
@@ -127,7 +118,7 @@ public class ReportController {
             @RequestParam(required = false) Long categoryId,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         List<ReportTaskVO> response =
                 reportService.getReportTasks(
@@ -147,7 +138,7 @@ public class ReportController {
             @RequestParam(required = false) Long categoryId,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         TimeAnalysisVO response =
                 reportService.getTimeAnalysis(

@@ -95,7 +95,6 @@ function App() {
                 element={<TaskCreatePage />}
               />
 
-
             <Route
               path="/reports"
               element={<ReportsPage />}

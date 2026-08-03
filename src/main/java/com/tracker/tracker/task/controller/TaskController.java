@@ -1,5 +1,6 @@
 package com.tracker.tracker.task.controller;
 
+import com.tracker.tracker.common.util.SessionUtils;
 import com.tracker.tracker.task.service.TaskService;
 import com.tracker.tracker.task.vo.TaskListResponseVO;
 import com.tracker.tracker.task.vo.TaskVO;
@@ -20,22 +21,13 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    private String getLoginUserId(HttpSession session) {
-        String userId = (String) session.getAttribute("userId");
-
-        if (userId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
-
-        return userId;
-    }
 
     @PostMapping
     public ResponseEntity<?> createTask(
             @RequestBody TaskVO taskVO,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         taskVO.setUserId(userId);
         TaskVO createdTask = taskService.createTask(taskVO);
@@ -45,14 +37,14 @@ public class TaskController {
 
     @GetMapping("/today")
     public ResponseEntity<?> getTodayTasks(HttpSession session) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         return ResponseEntity.ok(taskService.getTodayTasks(userId));
     }
 
     @GetMapping("/overdue")
     public ResponseEntity<?> getOverdueTasks(HttpSession session) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         return ResponseEntity.ok(taskService.getOverdueTasks(userId));
     }
@@ -77,7 +69,7 @@ public class TaskController {
             @RequestParam(required = false) String due,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         TaskListResponseVO response =
                 taskService.getTaskPage(userId, page, size, categoryId, taskStatus, due);
@@ -91,7 +83,7 @@ public class TaskController {
             @RequestBody TaskVO taskVO,
             HttpSession session
     ) {
-        String userId = getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         taskVO.setTaskId(taskId);
         taskVO.setUserId(userId);
@@ -107,7 +99,7 @@ public class TaskController {
             @RequestBody Map<String, String> request,
             HttpSession session
     ) {
-        getLoginUserId(session);
+        SessionUtils.getLoginUserId(session);
 
         String taskStatus = request.get("taskStatus");
 
@@ -125,7 +117,7 @@ public class TaskController {
             @PathVariable Long taskId,
             HttpSession session
     ) {
-        getLoginUserId(session);
+        SessionUtils.getLoginUserId(session);
 
         taskService.deleteTask(taskId);
 
