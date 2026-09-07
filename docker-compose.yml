@@ -1,0 +1,63 @@
+services:
+  oracle-db:
+    # gvenzl/oracle-xe는 x86_64 전용이라 Oracle Cloud A1.Flex(ARM/aarch64)에서 실행 불가.
+    # 후속 이미지인 oracle-free(23ai)는 ARM64를 공식 지원해서 이걸로 교체.
+    # ORACLE_PDB를 XEPDB1로 지정해서 기존 스키마 SQL(ALTER SESSION SET CONTAINER = XEPDB1)과
+    # 백엔드 설정(DB_SERVICE=XEPDB1)을 그대로 유지.
+    image: gvenzl/oracle-free:23-slim
+    container_name: tracker-db
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_SYSTEM_PASSWORD}
+      ORACLE_PDB: XEPDB1
+      APP_USER: ${DB_USERNAME}
+      APP_USER_PASSWORD: ${DB_PASSWORD}
+    # 로컬에서 SQL 클라이언트로 직접 접속해서 확인하고 싶을 때만 필요, 배포 서버라면 막아도 됨
+    ports:
+      - "1522:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./docker/db/init:/container-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tracker-backend
+    environment:
+      # 데모 작업(Task) 데이터까지 함께 채우고 싶은 최초 1회만
+      # SPRING_PROFILES=prod,seed docker compose up -d --build 로 실행하세요.
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES:-prod},seed
+      # 이 파일(로컬용)은 위 oracle-db 컨테이너에 접속.
+      # 실서버 배포(Autonomous DB 사용)는 docker-compose.prod.yml 참고.
+      DB_URL: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    # 프론트(nginx)가 컨테이너 내부 네트워크로 접근하므로 기본적으로는 호스트에 안 열어도 됨.
+    # 배포 후 API를 직접 호출해서 디버깅하고 싶다면 주석 해제.
+    # ports:
+    #   - "18080:18080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tracker-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  oracle-data:

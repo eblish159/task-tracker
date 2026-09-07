@@ -1,0 +1,33 @@
+# Oracle Cloud E2.1.Micro(Always Free) + Autonomous Database(Always Free) 배포용 compose.
+# A1.Flex 용량 문제로 DB를 컨테이너로 직접 띄우는 대신 Oracle이 관리하는
+# Autonomous Database를 쓰기로 해서, oracle-db 서비스 자체가 없음.
+#
+# 사용법(서버에서):
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+#
+# .env.prod 예시는 .env.prod.example 참고.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tracker-backend
+    environment:
+      # 데모 작업(Task) 데이터까지 함께 채우고 싶은 최초 1회만 유지, 이후에는 SPRING_PROFILES=prod 로 변경 권장
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES:-prod},seed
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tracker-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

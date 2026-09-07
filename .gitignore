@@ -6,6 +6,9 @@ build/
 !**/src/test/**/build/
 src/main/resources/application.yaml
 
+### 배포 관련 ###
+.env
+
 ### STS ###
 .apt_generated
 .classpath
@@ -36,3 +39,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.env.prod

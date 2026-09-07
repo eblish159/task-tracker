@@ -1,0 +1,12 @@
+.git
+.gradle
+.idea
+build
+out
+frontend/node_modules
+frontend/dist
+docker/db
+images
+*.md
+.env
+.env.example

@@ -46,7 +46,7 @@
 - Java 17
 - Spring Boot
 - Spring Security 6.x
-- Spring Session JDBC (세션 기반 인증)
+- 세션 기반 인증 (Spring Security + HttpSession)
 - MyBatis
 - Oracle DB
 - Gradle
@@ -56,6 +56,11 @@
 - Vite
 - React Router
 - Recharts
+
+### Infra / 배포
+- Docker / Docker Compose
+- Oracle XE (Docker)
+- Nginx (정적 파일 서빙 + API 리버스 프록시)
 
 ---
 
@@ -216,6 +221,35 @@ npm run dev
 ### 접속
 
 - http://localhost:5173 에서 확인 가능
+
+---
+
+### Docker로 배포 실행
+
+로컬 개발 환경과 별개로, Docker Compose 하나로 Oracle DB + Backend + Frontend(Nginx)를 함께 띄울 수 있도록 구성했습니다.
+
+```bash
+cp .env.example .env    # DB 계정/비밀번호 입력
+docker compose up -d --build
+```
+
+- 접속: http://localhost (프론트엔드가 80번 포트에서 `/api` 요청을 백엔드로 프록시)
+- 최초 실행 시 `docker/db/init/*.sql`이 자동 실행되어 테이블 생성 + 카테고리(1~10) 시드 + 데모 로그인 계정(`testuser` / `demo1234!`)이 준비됩니다.
+- 작업(Task) 데모 데이터까지 채우고 싶다면 최초 1회만 아래처럼 `seed` 프로필을 함께 활성화합니다.
+
+```bash
+SPRING_PROFILES=prod,seed docker compose up -d --build
+```
+
+이후 재기동 시에는 `docker compose up -d`로 실행하면 됩니다(다시 `prod` 프로필만 사용, 시더는 재실행되어도 기존 데이터를 지우고 다시 채우도록 되어 있어 안전합니다).
+
+서비스 구성:
+
+```
+[Nginx (frontend, :80)] --/api 프록시--> [Spring Boot (backend, :18080)] --> [Oracle XE (:1521)]
+```
+
+관련 파일: `Dockerfile`(backend), `frontend/Dockerfile`, `docker-compose.yml`, `docker/db/init/*.sql`
 
 ---
 
@@ -411,3 +445,5 @@ frontend
    월별/주별 캘린더 뷰에서 작업을 날짜별로 확인할 수 있는 기능 (포트폴리오 마무리 후 별도 구현 예정)
 4. **작업 목록 페이지 UI 개선**
    브라우저 기본 confirm/alert 대신 통일된 디자인의 커스텀 모달 적용 범위 확대
+5. **세션 저장소 분리 (다중 인스턴스 대응)**
+   현재는 단일 인스턴스 배포라 기본 In-memory 세션(HttpSession)으로 운영 중. 서버를 여러 대로 확장할 경우 Spring Session JDBC 또는 Redis로 세션 저장소를 분리해 인스턴스 간 세션 공유 문제를 해결할 예정
