@@ -51,18 +51,24 @@ public class TaskServiceImpl implements TaskService {
             return taskVO;
         }
 
-        return selectTaskById(taskVO.getTaskId());
+        return selectTaskById(taskVO.getTaskId(), taskVO.getUserId());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TaskVO selectTaskById(Long taskId) {
+    public TaskVO selectTaskById(Long taskId, String userId) {
         if(taskId == null){
             throw new IllegalArgumentException("taskId는 필수입니다.");
         }
+        if (!StringUtils.hasText(userId)) {
+            throw new IllegalArgumentException("USER_ID는 필수입니다.");
+        }
 
         TaskVO found = taskDAO.selectTaskById(taskId);
-        if(found == null){
+
+        // 존재하지 않거나 다른 사용자 소유인 경우 동일하게 처리해서
+        // "남의 taskId가 실제로 존재하는지" 자체가 드러나지 않도록 함
+        if(found == null || !userId.equals(found.getUserId())){
             throw new NoSuchElementException("해당 task를 찾을 수 없습니다.");
         }
 
@@ -119,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("수정할 taskId는 필수입니다.");
         }
 
-        TaskVO existing = selectTaskById(taskVO.getTaskId());
+        TaskVO existing = selectTaskById(taskVO.getTaskId(), taskVO.getUserId());
 
         normalizeForUpdate(taskVO, existing);
 
@@ -143,7 +149,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
 
-        return selectTaskById(taskVO.getTaskId());
+        return selectTaskById(taskVO.getTaskId(), taskVO.getUserId());
     }
 
     /**
@@ -151,14 +157,14 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional
-    public TaskVO updateTaskStatus(Long taskId, String taskStatus) {
+    public TaskVO updateTaskStatus(Long taskId, String taskStatus, String userId) {
         if (taskId == null) {
             throw new IllegalArgumentException("taskId는 필수입니다.");
         }
 
         validateTaskStatus(taskStatus);
 
-        TaskVO existing = selectTaskById(taskId);
+        TaskVO existing = selectTaskById(taskId, userId);
 
         if ("DELETED".equalsIgnoreCase(existing.getStatus())) {
             throw new IllegalStateException("삭제된 작업은 상태를 변경할 수 없습니다.");
@@ -178,20 +184,17 @@ public class TaskServiceImpl implements TaskService {
 
         taskLogService.saveLog(log);
 
-        return selectTaskById(taskId);
+        return selectTaskById(taskId, userId);
     }
 
     @Override
     @Transactional
-    public void deleteTask(Long taskId){
+    public void deleteTask(Long taskId, String userId){
         if(taskId == null){
             throw new IllegalArgumentException("taskId는 필수입니다.");
         }
 
-        TaskVO existing = taskDAO.selectTaskById(taskId);
-        if(existing == null) {
-            throw new NoSuchElementException("Task를 찾을 수 없습니다. taskId = " + taskId);
-        }
+        TaskVO existing = selectTaskById(taskId, userId);
 
         if ("DELETED".equalsIgnoreCase(existing.getStatus())){
             return;

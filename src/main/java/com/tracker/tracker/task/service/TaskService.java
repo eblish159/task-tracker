@@ -11,8 +11,8 @@ public interface TaskService {
     // 작업 생성
     TaskVO createTask(TaskVO taskVO);
 
-    // 작업 단건 조회
-    TaskVO selectTaskById(Long taskId);
+    // 작업 단건 조회 (소유자 검증 포함)
+    TaskVO selectTaskById(Long taskId, String userId);
 
     // 데이터 상태 기준 조회 (ACTIVE / DELETED)
     List<TaskVO> getTasks(String status);
@@ -24,10 +24,10 @@ public interface TaskService {
     TaskVO updateTask(TaskVO taskVO);
 
     // 작업 진행 상태만 변경
-    TaskVO updateTaskStatus(Long taskId, String taskStatus);
+    TaskVO updateTaskStatus(Long taskId, String taskStatus, String userId);
 
     // 논리 삭제
-    void deleteTask(Long taskId);
+    void deleteTask(Long taskId, String userId);
 
     //오늘 마감 조회
     List<TaskVO> getTodayTasks(String userId);

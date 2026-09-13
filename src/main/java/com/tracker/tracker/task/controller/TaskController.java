@@ -5,7 +5,6 @@ import com.tracker.tracker.task.service.TaskService;
 import com.tracker.tracker.task.vo.TaskListResponseVO;
 import com.tracker.tracker.task.vo.TaskVO;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,12 +49,10 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<?> getTask(@PathVariable Long taskId) {
-        TaskVO task = taskService.selectTaskById(taskId);
+    public ResponseEntity<?> getTask(@PathVariable Long taskId, HttpSession session) {
+        String userId = SessionUtils.getLoginUserId(session);
 
-        if (task == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("작업을 찾을 수 없습니다.");
-        }
+        TaskVO task = taskService.selectTaskById(taskId, userId);
 
         return ResponseEntity.ok(task);
     }
@@ -99,7 +96,7 @@ public class TaskController {
             @RequestBody Map<String, String> request,
             HttpSession session
     ) {
-        SessionUtils.getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
         String taskStatus = request.get("taskStatus");
 
@@ -107,7 +104,7 @@ public class TaskController {
             return ResponseEntity.badRequest().body("작업 상태 값이 필요합니다.");
         }
 
-        TaskVO updatedTask = taskService.updateTaskStatus(taskId, taskStatus);
+        TaskVO updatedTask = taskService.updateTaskStatus(taskId, taskStatus, userId);
 
         return ResponseEntity.ok(updatedTask);
     }
@@ -117,9 +114,9 @@ public class TaskController {
             @PathVariable Long taskId,
             HttpSession session
     ) {
-        SessionUtils.getLoginUserId(session);
+        String userId = SessionUtils.getLoginUserId(session);
 
-        taskService.deleteTask(taskId);
+        taskService.deleteTask(taskId, userId);
 
         return ResponseEntity.ok("작업이 삭제되었습니다.");
     }
