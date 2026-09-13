@@ -62,7 +62,6 @@ export default function TaskDetailPage({ taskId, onClose, onChanged }) {
   }
 
   useEffect(() => {
-    console.log("detail taskId:", taskId);
     if (!taskId) return;
     load();
   }, [taskId]);

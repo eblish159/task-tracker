@@ -26,20 +26,10 @@ public class UserServiceImpl implements UserService {
 
         UserVO user = userDAO.findByUserId(userId);
 
-        System.out.println("=== DEBUG: userId=[" + userId + "] len=" + userId.length());
-        System.out.println("=== DEBUG: user found? " + (user != null));
-
         if (user == null) {
             return false;
         }
 
-        System.out.println("=== DEBUG: input password=[" + password + "] len=" + password.length());
-        System.out.println("=== DEBUG: stored hash=[" + user.getUserPassword() + "] len=" + user.getUserPassword().length());
-
-        boolean isValidPassword = passwordEncoder.matches(password, user.getUserPassword());
-
-        System.out.println("=== DEBUG: matches result=" + isValidPassword);
-
-        return isValidPassword;
+        return passwordEncoder.matches(password, user.getUserPassword());
     }
 }

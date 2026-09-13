@@ -256,20 +256,6 @@ public class ReportServiceImpl implements ReportService {
 
         TimeAnalysisVO response = new TimeAnalysisVO();
 
-        System.out.println("===== Time Analysis =====");
-        System.out.println("조회 건수 : " + tasks.size());
-
-        for (TimeAnalysisTaskVO task : tasks) {
-
-            System.out.println("작업명 : " + task.getTaskTitle());
-
-            System.out.println("생성일 : " + task.getCreatedDate());
-
-            System.out.println("완료일 : " + task.getCompletedDate());
-
-            System.out.println("----------------");
-        }
-
         if (tasks == null || tasks.isEmpty()) {
             response.setAverageCompletionDays(0);
             response.setAverageDelayDays(0);
