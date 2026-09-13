@@ -2,7 +2,7 @@
 -- 기준 데이터(카테고리) + 데모 로그인 계정
 -- =========================================================
 
-ALTER SESSION SET CONTAINER = XEPDB1;
+ALTER SESSION SET CONTAINER = FREEPDB1;
 ALTER SESSION SET CURRENT_SCHEMA = TRACKER;
 
 -- 데모 로그인 계정 (아이디: testuser / 비밀번호: demo1234!)

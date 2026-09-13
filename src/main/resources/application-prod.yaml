@@ -8,7 +8,7 @@ spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
     # DB_URL은 환경마다 완전한 JDBC 접속 문자열을 그대로 넘김.
-    # - 로컬/컨테이너 Oracle DB: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+    # - 로컬/컨테이너 Oracle DB: jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
     # - Oracle Autonomous Database(Always Free, TLS, 지갑 없이 접속): 콘솔의
     #   TLS 접속 문자열을 그대로 사용 (jdbc:oracle:thin:@(description=...))
     url: ${DB_URL}

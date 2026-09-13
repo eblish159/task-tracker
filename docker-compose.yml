@@ -2,13 +2,15 @@ services:
   oracle-db:
     # gvenzl/oracle-xe는 x86_64 전용이라 Oracle Cloud A1.Flex(ARM/aarch64)에서 실행 불가.
     # 후속 이미지인 oracle-free(23ai)는 ARM64를 공식 지원해서 이걸로 교체.
-    # ORACLE_PDB를 XEPDB1로 지정해서 기존 스키마 SQL(ALTER SESSION SET CONTAINER = XEPDB1)과
-    # 백엔드 설정(DB_SERVICE=XEPDB1)을 그대로 유지.
+    # 주의: oracle-free(23ai) 이미지는 ORACLE_PDB 환경변수를 무시하고 항상
+    # FREEPDB1로 고정한다 (이미지 자체의 알려진 동작/버그, ORACLE_PDB 값을 줘도 적용 안 됨
+    # - https://github.com/oracle/docker-images/issues/2853).
+    # 그래서 여기서는 ORACLE_PDB를 지정하지 않고, 스키마 SQL(ALTER SESSION SET CONTAINER = FREEPDB1)과
+    # 백엔드 DB_URL도 FREEPDB1에 맞춰서 사용한다.
     image: gvenzl/oracle-free:23-slim
     container_name: tracker-db
     environment:
       ORACLE_PASSWORD: ${ORACLE_SYSTEM_PASSWORD}
-      ORACLE_PDB: XEPDB1
       APP_USER: ${DB_USERNAME}
       APP_USER_PASSWORD: ${DB_PASSWORD}
     # 로컬에서 SQL 클라이언트로 직접 접속해서 확인하고 싶을 때만 필요, 배포 서버라면 막아도 됨
@@ -36,7 +38,7 @@ services:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES:-prod},seed
       # 이 파일(로컬용)은 위 oracle-db 컨테이너에 접속.
       # 실서버 배포(Autonomous DB 사용)는 docker-compose.prod.yml 참고.
-      DB_URL: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+      DB_URL: jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
     depends_on:

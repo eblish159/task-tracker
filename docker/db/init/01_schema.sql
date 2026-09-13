@@ -5,7 +5,7 @@
 -- IDENTITY 컬럼(ISEQ$$_... 시퀀스)으로 되어 있어 동일하게 IDENTITY로 정의했습니다.
 -- =========================================================
 
-ALTER SESSION SET CONTAINER = XEPDB1;
+ALTER SESSION SET CONTAINER = FREEPDB1;
 ALTER SESSION SET CURRENT_SCHEMA = TRACKER;
 
 CREATE TABLE USERS (
