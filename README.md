@@ -15,7 +15,7 @@
 ## 배포 / 라이브 데모
 
 - **배포 URL**: http://168.110.18.108
-- **데모 로그인 계정**: `testuser` / `demo1234!`
+- **데모 로그인 계정**: `testuser` / `1234`
 - Oracle Cloud Always Free VM(VM.Standard.E2.1.Micro) + Oracle Autonomous Database 위에 Docker Compose로 배포
 - 배포 과정 회고: [1편 배포환경 결정](https://tkdgud.tistory.com/18) · [2편 Dockerfile/Compose](https://tkdgud.tistory.com/19) · [3편 DB 스키마 복원](https://tkdgud.tistory.com/20) · [4편 로컬 docker compose 성공](https://tkdgud.tistory.com/21) · [5편 아키텍처 전환](https://tkdgud.tistory.com/22) · [6편 실배포/트러블슈팅](https://tkdgud.tistory.com/23)
 
@@ -244,7 +244,7 @@ docker compose up -d --build
 ```
 
 - 접속: http://localhost (프론트엔드가 80번 포트에서 `/api` 요청을 백엔드로 프록시)
-- 최초 실행 시 `docker/db/init/*.sql`이 자동 실행되어 테이블 생성 + 카테고리(1~10) 시드 + 데모 로그인 계정(`testuser` / `demo1234!`)이 준비됩니다.
+- 최초 실행 시 `docker/db/init/*.sql`이 자동 실행되어 테이블 생성 + 카테고리(1~10) 시드 + 데모 로그인 계정(`testuser` / `1234`)이 준비됩니다.
 - 작업(Task) 데모 데이터까지 채우고 싶다면 최초 1회만 아래처럼 `seed` 프로필을 함께 활성화합니다.
 
 ```bash
