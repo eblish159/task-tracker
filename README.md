@@ -12,10 +12,19 @@
 
 ---
 
+## 배포 / 라이브 데모
+
+- **배포 URL**: http://168.110.18.108
+- **데모 로그인 계정**: `testuser` / `demo1234!`
+- Oracle Cloud Always Free VM(VM.Standard.E2.1.Micro) + Oracle Autonomous Database 위에 Docker Compose로 배포
+- 배포 과정 회고: [1편 배포환경 결정](https://tkdgud.tistory.com/18) · [2편 Dockerfile/Compose](https://tkdgud.tistory.com/19) · [3편 DB 스키마 복원](https://tkdgud.tistory.com/20) · [4편 로컬 docker compose 성공](https://tkdgud.tistory.com/21) · [5편 아키텍처 전환](https://tkdgud.tistory.com/22) · [6편 실배포/트러블슈팅](https://tkdgud.tistory.com/23)
+
+---
+
 ## 프로젝트 정보
 
 - 개인 프로젝트
-- 개발 기간 : 2026.01 ~ 2026.08
+- 개발 기간 : 2026.01 ~ 2026.09
 - Backend / Frontend 설계 및 구현
 - 개발 목적 : 작업 관리 데이터를 기반으로 현재 작업 현황과 기간별 성과를 분석할 수 있는 관리형 Dashboard/Reports 시스템 구현
 
@@ -59,8 +68,9 @@
 
 ### Infra / 배포
 - Docker / Docker Compose
-- Oracle XE (Docker)
 - Nginx (정적 파일 서빙 + API 리버스 프록시)
+- 로컬 개발: Oracle XE (Docker)
+- 운영 배포: Oracle Cloud VM.Standard.E2.1.Micro + Oracle Autonomous Database (Always Free)
 
 ---
 
