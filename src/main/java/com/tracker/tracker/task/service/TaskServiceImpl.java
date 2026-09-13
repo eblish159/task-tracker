@@ -1,5 +1,6 @@
 package com.tracker.tracker.task.service;
 
+import com.tracker.tracker.common.service.TaskCategoryService;
 import com.tracker.tracker.task.dao.TaskDAO;
 import com.tracker.tracker.task.vo.TaskListResponseVO;
 import com.tracker.tracker.task.vo.TaskVO;
@@ -22,10 +23,12 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskDAO taskDAO;
     private final TaskLogService taskLogService;
+    private final TaskCategoryService taskCategoryService;
 
-    public TaskServiceImpl(TaskDAO taskDAO, TaskLogService taskLogService){
+    public TaskServiceImpl(TaskDAO taskDAO, TaskLogService taskLogService, TaskCategoryService taskCategoryService){
         this.taskDAO = taskDAO;
         this.taskLogService = taskLogService;
+        this.taskCategoryService = taskCategoryService;
     }
 
     @Override
@@ -270,6 +273,11 @@ public class TaskServiceImpl implements TaskService {
         if (taskVO.getCategoryId() == null) {
             throw new IllegalArgumentException("CATEGORY_ID는 필수입니다.");
         }
+        // 다른 사용자 소유 카테고리로 task를 만들 수 없도록 검증
+        // (존재는 하지만 내 소유가 아닌 경우도 "찾을 수 없음"으로 동일하게 처리)
+        if (!taskCategoryService.isOwnedByUser(taskVO.getCategoryId(), taskVO.getUserId())) {
+            throw new NoSuchElementException("해당 카테고리를 찾을 수 없습니다.");
+        }
 
         if (!StringUtils.hasText(taskVO.getPriority())) {
             taskVO.setPriority("NORMAL");
@@ -297,6 +305,10 @@ public class TaskServiceImpl implements TaskService {
         }
         if (taskVO.getCategoryId() == null) {
             throw new IllegalArgumentException("CATEGORY_ID는 필수입니다.");
+        }
+        // 다른 사용자 소유 카테고리로 변경할 수 없도록 검증
+        if (!taskCategoryService.isOwnedByUser(taskVO.getCategoryId(), taskVO.getUserId())) {
+            throw new NoSuchElementException("해당 카테고리를 찾을 수 없습니다.");
         }
 
         if (!StringUtils.hasText(taskVO.getPriority())) {

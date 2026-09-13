@@ -15,8 +15,17 @@ public class TaskCategoryServiceImpl implements  TaskCategoryService{
     public TaskCategoryServiceImpl(TaskCategoryDAO taskCategoryDAO) {
         this.taskCategoryDAO = taskCategoryDAO;
     }
+
     @Override
-    public List<TaskCategoryVO> getAllCategories() {
-        return taskCategoryDAO.selectAll();
+    public List<TaskCategoryVO> getCategoriesByUserId(String userId) {
+        return taskCategoryDAO.selectAllByUserId(userId);
+    }
+
+    @Override
+    public boolean isOwnedByUser(Long categoryId, String userId) {
+        if (categoryId == null || userId == null || userId.isBlank()) {
+            return false;
+        }
+        return taskCategoryDAO.countByCategoryIdAndUserId(categoryId, userId) > 0;
     }
 }
